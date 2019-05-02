@@ -1,2 +1,2 @@
 # TurtleBridge
-<img src="/ASSETS/TurtleBridge_AB.png" data-canonical-src="/ASSETS/TurtleBridge_AB.png" width="128" height="64" />
+<img src="/ASSETS/TurtleBridge_AB_PREVIEW.png" data-canonical-src="/ASSETS/TurtleBridge_AB_PREVIEW.png" width="256" height="128" />
