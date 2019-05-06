@@ -16,6 +16,9 @@
 #define LED_BRIGHTNESS 32
 
 
+#define FISH_NONE 255 
+
+
 // - Race Game ------------------------
 
 #define DIST_MAXIMUM 3200 
@@ -117,13 +120,19 @@ enum class GameStateType : uint8_t {
   PlayGameScreen,
   HighScoreScreen
 };
-  
 
 enum class Direction : uint8_t {
   Up,     // 00
   Down,   // 01
   Left,   // 02
   Right,  // 03
+  None
+};
+
+enum class TurtleMode : uint8_t {
+  LookingUp,     // 00
+  LookingDown,   // 01
+  Diving,        // 02
   None
 };
 

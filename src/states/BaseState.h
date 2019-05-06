@@ -18,5 +18,6 @@ class BaseState : public GameState<GameContext, GameStateType> {
 	private:
 
     bool paused = false;
+    bool seaweed = true; 
 
 };

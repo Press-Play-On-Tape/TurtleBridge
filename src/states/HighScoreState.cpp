@@ -202,6 +202,6 @@ void HighScoreState::render(StateMachine & machine) {
 
   }
 
-  arduboy.display();
+  arduboy.display(true);
 
 }

@@ -70,6 +70,6 @@ void GameIntroState::render(StateMachine & machine) {
 
   BaseState::renderCommonScenery(machine);
   
-  arduboy.display();
+  arduboy.display(true);
 
 }

@@ -41,6 +41,22 @@ void BaseState::renderCommonScenery(StateMachine & machine) {
   auto & gameStats = machine.getContext().gameStats;
 	auto & arduboy = machine.getContext().arduboy;
 
+  SpritesB::drawOverwrite(0, 0, Images::SkyBackground, 0);
+  SpritesB::drawExternalMask(0, 15, Images::Ground_Left, Images::Ground_Left_Mask, 0, 0);
+  SpritesB::drawExternalMask(117, 15, Images::Ground_Right, Images::Ground_Right_Mask, 0, 0);
+
+  SpritesB::drawExternalMask(12, 48, Images::Seaweed, Images::Seaweed_Mask, this->seaweed ? 1 : 0, 0);
+  SpritesB::drawExternalMask(112, 48, Images::Seaweed, Images::Seaweed_Mask, this->seaweed ? 1 : 0, 0);
+  SpritesB::drawExternalMask(64, 54, Images::Seaweed, Images::Seaweed_Mask, this->seaweed ? 1 : 0, 0);
+
+  SpritesB::drawExternalMask(11, 48, Images::Ground_Bottom, Images::Ground_Bottom_Mask, 0, 0);
+
+  if (arduboy.everyXFrames(32)) {
+
+    this->seaweed = !this->seaweed;
+
+  }
+
 }
 
 

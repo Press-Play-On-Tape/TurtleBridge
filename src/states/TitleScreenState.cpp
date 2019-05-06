@@ -18,7 +18,7 @@ void TitleScreenState::activate(StateMachine & machine) {
 	
   gameStats.resetGame();
   sound.setOutputEnabled(arduboy.audio.enabled);
-  sound.tones(Sounds::Score);
+  //sound.tones(Sounds::Score);
 
 }
 
@@ -77,13 +77,14 @@ void TitleScreenState::render(StateMachine & machine) {
   auto & arduboy = machine.getContext().arduboy;
 
   BaseState::renderCommonScenery(machine);
+  Sprites::drawExternalMask(27, 9, Images::Title, Images::Title_Mask, 0, 0);
 
   if (this->pressACounter == PRESS_A_DELAY) {
 
-    SpritesB::drawOverwrite(43, 52, Images::PressA, 0);
+    SpritesB::drawExternalMask(26, 40, Images::PressA, Images::PressA_Mask, 0, 0);
 
   }
 
-	arduboy.display();
+	arduboy.display(true);
 
 }
