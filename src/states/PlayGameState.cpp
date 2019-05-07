@@ -52,7 +52,7 @@ void PlayGameState::activate(StateMachine & machine) {
 
 
 
-  this->player.setX(PLAYER_MIN_X_POS);
+  this->player.setPosition(0);
 
   this->launchFishCounter = random(120, 180);
 
@@ -98,12 +98,12 @@ void PlayGameState::update(StateMachine & machine) {
 
     // Update player position ..
 
-    if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.setDirection(Direction::Left); }
-    if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.setDirection(Direction::Right); }
+    if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.moveLeft(); }
+    if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.moveRight(); }
     
     if (arduboy.everyXFrames(2)) {
 
-      player.move();
+      //player.move();
 
     }
 
@@ -201,10 +201,12 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render Fishes ..
 
-  for (auto &fish : this->fishes) {
+  for (uint8_t x = 0; x < TURTLES_COUNT; x++) {
+
+    auto fish = this->fishes[x];
 
     if (fish.getEnabled()) {
-      SpritesB::drawExternalMask(fish.getDisplayX(), fish.getDisplayY(), Images::Fish, Images::Fish_Mask, fish.getImageIndex(), fish.getImageIndex());
+      SpritesB::drawExternalMask(fish.getDisplayX(), fish.getDisplayY(), Images::Fish, Images::Fish_Mask, fish.getImageIndex() + (x < 3 ? 2 : 0), fish.getImageIndex() + (x < 3 ? 2 : 0));
     }
 
   }
@@ -213,10 +215,15 @@ void PlayGameState::render(StateMachine & machine) {
   // Render turtles ..
 
   for (auto &turtle : this->turtles) {
-
+  
     SpritesB::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle, Images::Turtle_Mask, turtle.getImageIndex(), turtle.getImageIndex());
 
   }
+
+
+  // Render player ..
+
+  SpritesB::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(), Images::Arduboy, Images::Arduboy_Mask, 0, 0);
 
 
   // Render score ..

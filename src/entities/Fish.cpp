@@ -11,7 +11,7 @@ const uint8_t positionX[5][5] = {
 };
 
 const uint8_t positionY[5] = { 
-  59, 56, 53, 50, 47
+  59, 57, 55, 53, 51
 };
 
 

@@ -9,25 +9,23 @@ class Player {
 
     Player();
      
-    uint8_t getX();
-    uint8_t getY();
-    Direction getDirection();
+    uint8_t getDisplayX();
+    uint8_t getDisplayY();
+    uint8_t getPosition();
+    
+    void setPosition(uint8_t position);
 
-    void setX(uint8_t value);
-    void setDirection(Direction value);
 
-    void move();
-    bool canChangeDirections();
+    // Methods ..
+
     bool canMoveLeft();
     bool canMoveRight();
-    uint8_t getImageIndex();
-    
+    void moveLeft();
+    void moveRight();
+
   protected:
 
-    uint8_t x;
-    uint8_t xIdx;
-    uint8_t image;
-    Direction direction = Direction::None;
+    uint8_t position;
 
 };
 

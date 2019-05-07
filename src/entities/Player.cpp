@@ -5,108 +5,65 @@
 
 #define NUM_OF_ELEMENTS 5
 
-const uint8_t PROGMEM steps[] = { // 21 steps between positions.
-  3, 4, 7, 4, 3
+const uint8_t PROGMEM positionX[] = { 
+  0, 3, 4, 5,
+};
+
+const uint8_t PROGMEM positionY[] = { 
+  0, 3, 4, 5,
 };
 
 Player::Player() { 
 
-    this->x = PLAYER_MIN_X_POS;
+}
+
+uint8_t Player::getDisplayX() {
+
+  return pgm_read_byte(&positionX[this->position]);
 
 }
 
-uint8_t Player::getX() {
+uint8_t Player::getDisplayY() {
 
-  return this->x;
-
-}
-
-uint8_t Player::getY() {
-
-  return PLAYER_Y_POS;
+  return pgm_read_byte(&positionY[this->position]);
 
 }
 
-uint8_t Player::getImageIndex() {
+uint8_t Player::getPosition() {
 
-  return this->image / PLAYER_STEP_INC;
-
-}
-
-Direction Player::getDirection() {
-
-  return this->direction;
+  return this->position;
 
 }
 
-void Player::setX(uint8_t value) {
+void Player::setPosition(uint8_t position) {
 
-  this->x = value;
-
-}
-
-void Player::setDirection(Direction value) {
-
-  this->direction = value;
+  this->position = position;
 
 }
 
-bool Player::canChangeDirections() {
 
-  return this->xIdx == 0;
-
-}
+// Methods ..
 
 bool Player::canMoveLeft() {
 
-  return (this->xIdx == 0) && (this->x > PLAYER_MIN_X_POS);
+  return this->position > 0;
 
 }
 
 bool Player::canMoveRight() {
 
-  return (this->xIdx == 0) && (this->x < PLAYER_MAX_X_POS);
+  return this->position < 4;
 
 }
 
+void Player::moveLeft() {
 
-void Player::move() {
+  this->position--;
 
-  switch (this->direction) {
+}
 
-    case Direction::Left:
+void Player::moveRight() {
 
-      this->x = this->x - pgm_read_byte(&steps[this->xIdx++]);
-      // this->image++;
-      // if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
-
-      // if (this->xIdx == NUM_OF_ELEMENTS) {
-      //   this->xIdx = 0;
-      //   this->direction = Direction::None;
-      // }
-      break;
-
-    case Direction::Right:
-
-      this->x = this->x + pgm_read_byte(&steps[this->xIdx++]);
-      // this->image++;
-      // if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
-
-      // if (this->xIdx == NUM_OF_ELEMENTS) {
-      //   this->xIdx = 0;
-      //   this->direction = Direction::None;
-      // }
-      break;
-      default: break;
-    
-  }
-
-  this->image++;
-  if (this->image == PLAYER_STEP_INC * 2) this->image = 0;
-
-  if (this->xIdx == NUM_OF_ELEMENTS) {
-    this->xIdx = 0;
-    this->direction = Direction::None;
-  }
+  this->position++;
 
 }
