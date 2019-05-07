@@ -16,6 +16,7 @@ class Fish {
     uint8_t getFishIndex();
     uint8_t getImageIndex();
     uint8_t getDelay();
+    bool isEdible();
 
     void setEnabled(bool enabled);
     void setFishIndex(uint8_t value);
@@ -33,6 +34,7 @@ class Fish {
   protected:
 
     bool enabled;
+    bool edible;
     uint8_t fishIndex;
     uint8_t imageIndex;
     uint8_t positionIndex;

@@ -6,6 +6,14 @@
 #include "../sounds/Sounds.h"
 
 
+const uint8_t PROGMEM init_turtles[25] = { 
+  11, 29, static_cast<uint8_t>(Direction::Left), static_cast<uint8_t>(TurtleMode::LookingDown), 0,
+  32, 29, static_cast<uint8_t>(Direction::Left), static_cast<uint8_t>(TurtleMode::LookingDown), 20,
+  53, 29, static_cast<uint8_t>(Direction::Left), static_cast<uint8_t>(TurtleMode::LookingDown), 40,
+  74, 29, static_cast<uint8_t>(Direction::Right), static_cast<uint8_t>(TurtleMode::LookingDown), 60,
+  95, 29, static_cast<uint8_t>(Direction::Right), static_cast<uint8_t>(TurtleMode::LookingDown), 80,
+};
+
 // ----------------------------------------------------------------------------
 //  Initialise state ..
 //
@@ -21,30 +29,15 @@ void PlayGameState::activate(StateMachine & machine) {
 
   // Initialise turtles ..
 
-  this->turtles[0].setX(11);
-  this->turtles[0].setY(29);
-  this->turtles[0].setDirection(Direction::Left);
-  this->turtles[0].setMode(TurtleMode::LookingDown);
+  for (uint8_t x = 0; x < 5; x++) {
+  
+    this->turtles[x].setX(pgm_read_byte(&init_turtles[(x * 5)]));
+    this->turtles[x].setY(pgm_read_byte(&init_turtles[(x * 5) + 1]));
+    this->turtles[x].setDirection(static_cast<Direction>(pgm_read_byte(&init_turtles[(x * 5) + 2])));
+    this->turtles[x].setMode(static_cast<TurtleMode>(pgm_read_byte(&init_turtles[(x * 5) + 3])));
+    this->turtles[x].setBobUpDown(pgm_read_byte(&init_turtles[(x * 5) + 4]));
 
-  this->turtles[1].setX(32);
-  this->turtles[1].setY(29);
-  this->turtles[1].setDirection(Direction::Left);
-  this->turtles[1].setMode(TurtleMode::LookingDown);
-
-  this->turtles[2].setX(53);
-  this->turtles[2].setY(29);
-  this->turtles[2].setDirection(Direction::Left);
-  this->turtles[2].setMode(TurtleMode::LookingDown);
-
-  this->turtles[3].setX(74);
-  this->turtles[3].setY(29);
-  this->turtles[3].setDirection(Direction::Right);
-  this->turtles[3].setMode(TurtleMode::LookingDown);
-
-  this->turtles[4].setX(95);
-  this->turtles[4].setY(29);
-  this->turtles[4].setDirection(Direction::Right);
-  this->turtles[4].setMode(TurtleMode::LookingDown);
+  }
 
 
   // Initialise fishes ..
@@ -91,8 +84,7 @@ void PlayGameState::update(StateMachine & machine) {
 
       this->launchFishCounter = random(120, 180);
       uint8_t fishIndex = getDisabledFish();
-Serial.print("fish: ");
-Serial.println(fishIndex);
+
       if (fishIndex != FISH_NONE) {
 
         auto &fish = this->fishes[fishIndex];
@@ -100,16 +92,6 @@ Serial.println(fishIndex);
         fish.setDelay(random(20, 40));
 
       }
-
-        for (uint8_t x = 0; x < 5; x++) {
-
-          auto &fish = this->fishes[x];
-          Serial.print("Fish No: ");
-          Serial.print(fish.getFishIndex());
-          Serial.print(", enabled");
-          Serial.println(fish.getEnabled());
-
-        }
 
     }
 
@@ -148,12 +130,20 @@ Serial.println(fishIndex);
   }
 
 
-
   // Update fish locations ..
 
-  for (auto &fish : this->fishes) {
+  for (uint8_t x = 0; x < TURTLES_COUNT; x++) {
+  
+    auto &fish = this->fishes[x];
+    auto &turtle = this->turtles[x];
 
     fish.updatePositionIndex();
+
+    if (fish.isEdible()) {
+      turtle.setMode(TurtleMode::Diving);
+    }
+
+    turtle.updateMode();
 
   }
 
@@ -176,7 +166,7 @@ uint8_t PlayGameState::getDisabledFish() {
   uint8_t fishes[5];
   uint8_t fishCount = 0;
 
-  for (uint8_t x = 0; x < 5; x++) {
+  for (uint8_t x = 0; x < TURTLES_COUNT; x++) {
   
     auto fish = this->fishes[x];
 
@@ -208,29 +198,23 @@ void PlayGameState::render(StateMachine & machine) {
   BaseState::renderCommonScenery(machine);
 
 
+
+  // Render Fishes ..
+
+  for (auto &fish : this->fishes) {
+
+    if (fish.getEnabled()) {
+      SpritesB::drawExternalMask(fish.getDisplayX(), fish.getDisplayY(), Images::Fish, Images::Fish_Mask, fish.getImageIndex(), fish.getImageIndex());
+    }
+
+  }
+
+
   // Render turtles ..
 
   for (auto &turtle : this->turtles) {
 
     SpritesB::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle, Images::Turtle_Mask, turtle.getImageIndex(), turtle.getImageIndex());
-
-  }
-
-
-  // Render Fishes ..
-
-  Serial.println("--------------------------------");
-  for (auto &fish : this->fishes) {
-
-    if (fish.getEnabled()) {
-      Serial.print("render ");
-      Serial.print(fish.getFishIndex());
-      Serial.print(" at ");
-      Serial.print(fish.getDisplayX());
-      Serial.print(", ");
-      Serial.println(fish.getDisplayY());
-      SpritesB::drawExternalMask(fish.getDisplayX(), fish.getDisplayY(), Images::Fish, Images::Fish_Mask, fish.getImageIndex(), fish.getImageIndex());
-    }
 
   }
 

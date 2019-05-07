@@ -3,11 +3,11 @@
 #include "../utils/Enums.h"
 
 const uint8_t positionX[5][5] = { 
-  { 0, 3, 6, 8, 9 },
-  { 26, 28, 30, 31, 32 },
-  { 51, 52, 53, 53, 53 },
+  { 3, 6, 9, 11, 12 },
+  { 26, 28, 30, 32, 33 },
+  { 51, 52, 53, 54, 54 },
   { 91, 89, 87, 86, 85 },
-  { 119, 116, 113, 111, 109 },
+  { 115, 112, 109, 107, 105 },
 };
 
 const uint8_t positionY[5] = { 
@@ -42,6 +42,12 @@ uint8_t Fish::getDelay() {
 
 }
 
+bool Fish::isEdible() {
+
+  return this->edible;
+
+}
+
 void Fish::setEnabled(bool enabled) {
 
   this->enabled = enabled;
@@ -50,6 +56,7 @@ void Fish::setEnabled(bool enabled) {
     this->counter = 120;
     this->imageIndex = 0;
     this->positionIndex = 0;
+    this->edible = false;
   }
 
 }
@@ -94,21 +101,33 @@ void Fish::updateImageIndex() {
 
 }
 
-
 void Fish::updatePositionIndex() {
 
-  if (this->delayValue > 0) this->delayValue--;
+  switch (this->delayValue) {
 
-  if (this->delayValue == 0) {
+    case 0:
+      this->delayValue = this->delayValueInit;
+      this->positionIndex++;
 
-    this->delayValue = this->delayValueInit;
-    this->positionIndex++;
+      if (this->positionIndex == 5) {
 
-    if (this->positionIndex == 5) {
+        this->enabled = false;
+        this->edible = false;
 
-      this->enabled = false;
+      }
+      break;
 
-    }
+    case 10:
+      if (this->positionIndex == 4) {
+        this->edible = true;
+      }
+      this->delayValue--;
+      break;
+
+    default:  
+      this->edible = false;
+      this->delayValue--;
+      break;
 
   }
 
