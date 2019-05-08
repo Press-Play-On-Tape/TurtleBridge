@@ -17,6 +17,7 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
 
     uint8_t counter = 0;
     uint8_t launchFishCounter = 0;
+    uint8_t stickHeadUpCounter = 0;
 
   public:
     void activate(StateMachine & machine) override;

@@ -55,6 +55,7 @@ void PlayGameState::activate(StateMachine & machine) {
   this->player.setPosition(0);
 
   this->launchFishCounter = random(120, 180);
+  this->stickHeadUpCounter = random(200, 240);
 
   BaseState::setPaused(false);
   sound.setOutputEnabled(arduboy.audio.enabled);
@@ -76,6 +77,7 @@ void PlayGameState::update(StateMachine & machine) {
   if (!BaseState::getPaused()) {
 
     if (this->launchFishCounter > 0) launchFishCounter--;
+    if (this->stickHeadUpCounter > 0) stickHeadUpCounter--;
 
 
     // Launch a fish?
@@ -95,6 +97,22 @@ void PlayGameState::update(StateMachine & machine) {
 
     }
 
+
+    // Stick turtles head up?
+
+    if (this->stickHeadUpCounter == 0) {
+
+      this->stickHeadUpCounter = random(200, 240);
+      uint8_t fishIndex = getDisabledFish();
+
+      if (fishIndex != FISH_NONE) {
+
+        auto &turtle = this->turtles[fishIndex];
+        turtle.setMode(TurtleMode::LookingUp);
+
+      }
+
+    }
 
     // Update player position ..
 
