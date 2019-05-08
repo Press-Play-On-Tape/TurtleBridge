@@ -15,11 +15,13 @@ class Turtle {
     uint8_t getX();
     uint8_t getY();
     TurtleMode getMode();
+    TurtleType getType();
     Direction getDirection();
 
     void setX(uint8_t x);
     void setY(uint8_t y);
     void setMode(TurtleMode mode);
+    void setType(TurtleType type);
     void setDirection(Direction direction);
     void setBobUpDown(uint8_t bobUpDown);
 
@@ -38,6 +40,7 @@ class Turtle {
     uint8_t returnToLookingDown;
     uint8_t bobUpDown;
     TurtleMode mode = TurtleMode::LookingDown;
+    TurtleType type = TurtleType::Black;
     Direction direction;
 
 };

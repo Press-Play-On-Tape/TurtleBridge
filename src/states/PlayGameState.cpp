@@ -216,7 +216,12 @@ void PlayGameState::render(StateMachine & machine) {
 
   for (auto &turtle : this->turtles) {
   
-    SpritesB::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle, Images::Turtle_Mask, turtle.getImageIndex(), turtle.getImageIndex());
+    if (turtle.getType() != TurtleType::Black) {
+      SpritesB::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle_02, Images::Turtle_02_Mask, turtle.getImageIndex(), turtle.getImageIndex());
+    }
+    else {
+      SpritesB::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle_01, Images::Turtle_01_Mask, turtle.getImageIndex(), turtle.getImageIndex());
+    }
 
   }
 
@@ -224,6 +229,8 @@ void PlayGameState::render(StateMachine & machine) {
   // Render player ..
 
   SpritesB::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(), Images::Arduboy, Images::Arduboy_Mask, 0, 0);
+
+  SpritesB::drawExternalMask(0, 34, Images::Water, Images::Water_Mask, 0, 0);
 
 
   // Render score ..

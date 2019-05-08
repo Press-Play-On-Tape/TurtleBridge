@@ -12,8 +12,10 @@ class Player {
     uint8_t getDisplayX();
     uint8_t getDisplayY();
     uint8_t getPosition();
+    bool isHoldingPackage();
     
     void setPosition(uint8_t position);
+    void setHoldingPackage(bool value);
 
 
     // Methods ..
@@ -26,6 +28,7 @@ class Player {
   protected:
 
     uint8_t position;
+    bool holdingPackage;
 
 };
 

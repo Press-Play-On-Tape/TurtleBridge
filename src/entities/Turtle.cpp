@@ -24,6 +24,12 @@ TurtleMode Turtle::getMode() {
 
 }
 
+TurtleType Turtle::getType() {
+
+  return this->type;
+
+}
+
 Direction Turtle::getDirection() {
 
   return this->direction;
@@ -62,6 +68,10 @@ void Turtle::setMode(TurtleMode mode) {
       
   }
 
+}
+
+void Turtle::setType(TurtleType type) {
+  this->type = type;
 }
 
 void Turtle::setDirection(Direction direction) {

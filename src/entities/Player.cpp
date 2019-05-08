@@ -35,9 +35,21 @@ uint8_t Player::getPosition() {
 
 }
 
+bool Player::isHoldingPackage() {
+
+  return this->holdingPackage;
+
+}
+
 void Player::setPosition(uint8_t position) {
 
   this->position = position;
+
+}
+
+void Player::setHoldingPackage(bool value) {
+
+  this->holdingPackage = value;
 
 }
 

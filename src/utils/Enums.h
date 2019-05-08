@@ -79,6 +79,11 @@ enum class TurtleMode : uint8_t {
   None
 };
 
+enum class TurtleType : uint8_t {
+  Black,
+  White
+};
+
 struct GameStats {
 
   public: 
