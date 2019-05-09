@@ -71,7 +71,7 @@ void PlayGameState::update(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
   auto & sound = machine.getContext().sound;  
-	auto pressed = arduboy.pressedButtons();
+	auto justPressed = arduboy.justPressedButtons();
 
 
   if (!BaseState::getPaused()) {
@@ -116,8 +116,8 @@ void PlayGameState::update(StateMachine & machine) {
 
     // Update player position ..
 
-    if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.moveLeft(); }
-    if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.moveRight(); }
+    if ((justPressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.moveLeft(); }
+    if ((justPressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.moveRight(); }
     
     if (arduboy.everyXFrames(2)) {
 

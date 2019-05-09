@@ -19,5 +19,6 @@ class BaseState : public GameState<GameContext, GameStateType> {
 
     bool paused = false;
     bool seaweed = true; 
+    uint8_t backgroundX = 0;
 
 };

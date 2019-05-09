@@ -18,7 +18,11 @@ Player::Player() {
 }
 
 uint8_t Player::getDisplayX() {
-
+Serial.print(this->position);
+Serial.print(" ");
+Serial.print(pgm_read_byte(&positionX[this->position]));
+Serial.print(" ");
+Serial.println(pgm_read_byte(&positionY[this->position]));
   return pgm_read_byte(&positionX[this->position]);
 
 }

@@ -41,7 +41,16 @@ void BaseState::renderCommonScenery(StateMachine & machine) {
   auto & gameStats = machine.getContext().gameStats;
 	auto & arduboy = machine.getContext().arduboy;
 
-  SpritesB::drawOverwrite(0, 0, Images::SkyBackground, 0);
+  if (arduboy.everyXFrames(64)) {
+  
+    this->backgroundX++;
+    if (this->backgroundX >= 64) this->backgroundX = 0;
+
+  }
+
+  SpritesB::drawOverwrite(this->backgroundX - 64, 0, Images::SkyBackground, 0);
+  SpritesB::drawOverwrite(this->backgroundX, 0, Images::SkyBackground, 0);
+  
   SpritesB::drawExternalMask(0, 15, Images::Ground_Left, Images::Ground_Left_Mask, 0, 0);
   SpritesB::drawExternalMask(117, 15, Images::Ground_Right, Images::Ground_Right_Mask, 0, 0);
 
