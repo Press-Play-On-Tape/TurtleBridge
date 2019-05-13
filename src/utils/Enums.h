@@ -55,6 +55,22 @@ constexpr size_t eepromSaveEntriesStart = eepromStart + 3;
 
 #define FLASH_FRAME_COUNT_2 56
 
+enum class Player_Positions : int8_t {
+  Standing_ArmsDown,
+	Standing_ArmsUp,
+	Standing_ArmsUp_WithPackage,
+	Jumping_Left_01,
+	Jumping_Left_01_WithPackage,
+	Jumping_Left_02,
+	Jumping_Left_02_WithPackage,
+	Jumping_Right_01,
+	Jumping_Right_01_WithPackage,
+	Jumping_Right_02,
+	Jumping_Right_02_WithPackage,
+  Drowning_01,
+  Drowning_02
+};
+
 enum class GameStateType : uint8_t {
   None,
 	SplashScreen,

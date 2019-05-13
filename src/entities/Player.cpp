@@ -5,37 +5,42 @@
 
 #define NUM_OF_ELEMENTS 5
 
-const uint8_t PROGMEM positionX[] = { 
-  0, 3, 4, 5,
+const int8_t PROGMEM positionData[] = { 
+  14, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown),
+  16, -2, static_cast<int8_t>(Player_Positions::Jumping_Left_01),
+  17, -3, static_cast<int8_t>(Player_Positions::Jumping_Left_02),
+  18, -3, static_cast<int8_t>(Player_Positions::Jumping_Right_01),
+  19, -2, static_cast<int8_t>(Player_Positions::Jumping_Right_02),
+  20, 0, static_cast<int8_t>(Player_Positions::Jumping_Left_02),
 };
 
-const uint8_t PROGMEM positionY[] = { 
-  0, 3, 4, 5,
-};
 
 Player::Player() { 
 
 }
 
-uint8_t Player::getDisplayX() {
-Serial.print(this->position);
-Serial.print(" ");
-Serial.print(pgm_read_byte(&positionX[this->position]));
-Serial.print(" ");
-Serial.println(pgm_read_byte(&positionY[this->position]));
-  return pgm_read_byte(&positionX[this->position]);
+int8_t Player::getDisplayX() {
+
+  return pgm_read_byte(&positionData[this->position * 3]);
 
 }
 
-uint8_t Player::getDisplayY() {
+int8_t Player::getDisplayY() {
 
-  return pgm_read_byte(&positionY[this->position]);
+  return pgm_read_byte(&positionData[(this->position * 3) + 1]);
 
 }
 
 uint8_t Player::getPosition() {
 
   return this->position;
+
+}
+
+uint8_t Player::getImageIndex() {
+
+Serial.println(pgm_read_byte(&positionData[this->position * 3] + 2));
+  return pgm_read_byte(&positionData[this->position * 3] + 2);
 
 }
 
@@ -68,7 +73,7 @@ bool Player::canMoveLeft() {
 
 bool Player::canMoveRight() {
 
-  return this->position < 4;
+  return this->position < 6;
 
 }
 

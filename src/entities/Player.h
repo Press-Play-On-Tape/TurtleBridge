@@ -9,8 +9,8 @@ class Player {
 
     Player();
      
-    uint8_t getDisplayX();
-    uint8_t getDisplayY();
+    int8_t getDisplayX();
+    int8_t getDisplayY();
     uint8_t getPosition();
     bool isHoldingPackage();
     
@@ -24,6 +24,7 @@ class Player {
     bool canMoveRight();
     void moveLeft();
     void moveRight();
+    uint8_t getImageIndex();
 
   protected:
 
