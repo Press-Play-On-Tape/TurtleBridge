@@ -71,6 +71,7 @@ void PlayGameState::update(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
   auto & gameStats = machine.getContext().gameStats;
   auto & sound = machine.getContext().sound;  
+	auto pressed = arduboy.pressedButtons();
 	auto justPressed = arduboy.justPressedButtons();
 
 
@@ -116,12 +117,19 @@ void PlayGameState::update(StateMachine & machine) {
 
     // Update player position ..
 
-    if ((justPressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.moveLeft(); }
-    if ((justPressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.moveRight(); }
+    // if ((justPressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.moveLeft(); }
+    // if ((justPressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.moveRight(); }
+      if (arduboy.everyXFrames(2)) {
+    if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { 
+//      this->player.moveLeft(); 
+      this->player.setDirection(Direction::Left);
+      }
+    if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { 
+      this->player.setDirection(Direction::Right);
+    //  this->player.moveRight(); 
+    }
     
-    if (arduboy.everyXFrames(2)) {
-
-      //player.move();
+      player.move();
 
     }
 
@@ -246,7 +254,10 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render player ..
 
-  SpritesB::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
+  uint8_t turtleIndex = this->player.getTurtleIndex();
+  Turtle &turtle = this->turtles[turtleIndex != TURTLE_NONE ? turtleIndex : 0];
+
+  SpritesB::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(turtleIndex != TURTLE_NONE ? (turtle.getBobUp() ? 1 : 0) : 0), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
 
   SpritesB::drawExternalMask(0, 34, Images::Water, Images::Water_Mask, 0, 0);
 

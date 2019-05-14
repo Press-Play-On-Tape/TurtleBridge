@@ -32,6 +32,7 @@ class Turtle {
     uint8_t getDisplayX();
     uint8_t getDisplayY();
     void updateMode();
+    bool getBobUp();
 
   protected:
 

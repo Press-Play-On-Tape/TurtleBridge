@@ -155,3 +155,10 @@ void Turtle::updateMode() {
   }
 
 }
+
+
+bool Turtle::getBobUp() {
+
+  return (this->bobUpDown < 50);
+
+}
