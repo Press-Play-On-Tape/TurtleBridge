@@ -252,6 +252,11 @@ void PlayGameState::render(StateMachine & machine) {
   }
 
 
+  // Render score ..
+
+  BaseState::renderScore(machine, false, 0);
+
+
   // Render player ..
 
   uint8_t turtleIndex = this->player.getTurtleIndex();
@@ -260,11 +265,6 @@ void PlayGameState::render(StateMachine & machine) {
   SpritesB::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(turtleIndex != TURTLE_NONE ? (turtle.getBobUp() ? 1 : 0) : 0), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
 
   SpritesB::drawExternalMask(0, 34, Images::Water, Images::Water_Mask, 0, 0);
-
-
-  // Render score ..
-
-  BaseState::renderScore(machine, false, 0);
 
 
   BaseState::renderGameOverOrPause(machine);
