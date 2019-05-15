@@ -170,6 +170,8 @@ void PlayGameState::update(StateMachine & machine) {
     }
 
     turtle.updateMode();
+// //sjh
+//     uint8_t stickHeadUpCounter = 0;
 
   }
 
@@ -264,7 +266,10 @@ void PlayGameState::render(StateMachine & machine) {
 
   SpritesB::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(turtleIndex != TURTLE_NONE ? (turtle.getBobUp() ? 1 : 0) : 0), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
 
-  SpritesB::drawExternalMask(0, 34, Images::Water, Images::Water_Mask, 0, 0);
+//  SpritesB::drawExternalMask(0, 34, Images::Water, Images::Water_Mask, 0, 0);
+  SpritesB::drawExternalMask(0, 34 - (this->turtles[0].getBobUp() ? 1 : 0), Images::Water_01, Images::Water_01_Mask, 0, 0);
+  SpritesB::drawExternalMask(43, 34 - (this->turtles[2].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  SpritesB::drawExternalMask(85, 34 - (this->turtles[4].getBobUp() ? 1 : 0), Images::Water_03, Images::Water_03_Mask, 0, 0);
 
 
   BaseState::renderGameOverOrPause(machine);
