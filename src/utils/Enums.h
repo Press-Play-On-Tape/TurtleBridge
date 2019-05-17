@@ -58,7 +58,6 @@ constexpr size_t eepromSaveEntriesStart = eepromStart + 3;
 
 enum class Player_Positions : int8_t {
   Standing_ArmsDown,
-	Standing_ArmsUp,
 	Standing_ArmsUp_WithPackage,
 	Jumping_Left_01,
 	Jumping_Left_01_WithPackage,
@@ -69,7 +68,9 @@ enum class Player_Positions : int8_t {
 	Jumping_Right_02,
 	Jumping_Right_02_WithPackage,
   Drowning_01,
-  Drowning_02
+  Drowning_02,
+  Giving,
+  Giving_WithPackage,
 };
 
 enum class GameStateType : uint8_t {
@@ -101,6 +102,11 @@ enum class TurtleType : uint8_t {
   White
 };
 
+enum class GameMode : uint8_t {
+  Easy,
+  Hard
+};
+
 struct GameStats {
 
   public: 
@@ -109,16 +115,13 @@ struct GameStats {
 
     uint16_t score = 0;
     uint8_t misses = 0;
-    int16_t health = 0;
-    uint16_t level = 0;
-    uint8_t xPosition = 0;  // Player x position between sequences ..
-    uint16_t targetScore = 0;
+
+    GameMode mode = GameMode::Easy;
+
     bool gameOver = false;
 
     void resetGame() {
 
-      this->level = 0;
-      this->health = 0;
       this->misses = 0;
       this->score = 0; 
       this->gameOver = false;

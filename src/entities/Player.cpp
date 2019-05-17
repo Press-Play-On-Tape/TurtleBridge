@@ -8,21 +8,14 @@
 
 const int8_t PROGMEM positionData[] = { 
 
-  -4, -11, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 1,
-  -3, -12, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  -2, -13, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  -1, -13, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
+  -4, -9, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 1,
+  -3, -10, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+  -2, -11, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+  -1, -12, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
   0, -12, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
   1, -12, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   2, -11, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   3, -11, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-//  4, -10, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-
-  // -4, -11, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 1,
-  // -2, -13, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  // 0, -12, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  // 2, -11, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  // 4, -10, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
 
   4, -10, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   5, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
@@ -129,25 +122,48 @@ const int8_t PROGMEM positionData[] = {
 
   95, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 6,
 
+  // 96, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+  // 97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+  // 98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+
+  // 99, -3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+  // 100, -5, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
+  // 101, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
+
+  // 102, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+  // 103, -9, static_cast<int8_t>(Player_Positions::Giving), 0,
+  // 104, -9, static_cast<int8_t>(Player_Positions::Giving), 0,
+
+  // 105, -10, static_cast<int8_t>(Player_Positions::Giving), 0,
+  // 105, -10, static_cast<int8_t>(Player_Positions::Giving), 0,
+  // 104, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+
+  // 103, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
+  // 102, -8, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
+  // 101, -7, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
+
+  // 100, -5, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
+  // 99, -3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+  // 98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+
+  // 97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+  // 95, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+
+  // 95, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 7,
+
+
   96, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  99, -3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  100, -5, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  101, -7, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  102, -8, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  103, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  104, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  105, -10, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  105, -10, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  104, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  103, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  102, -8, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  101, -7, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  100, -5, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  99, -3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+
+  99, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+
+  99, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
   98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+
   95, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
 
   95, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 7,
@@ -185,7 +201,12 @@ Direction Player::getDirection() {
 
 uint8_t Player::getImageIndex() {
 
-  return pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 2) + (this->direction == Direction::Right ? 4 : 0);
+  uint8_t imageIndex = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 2);
+  uint8_t rightOffset = (((static_cast<Player_Positions>(imageIndex) == Player_Positions::Jumping_Left_01 ||
+                           static_cast<Player_Positions>(imageIndex) == Player_Positions::Jumping_Left_02) &&
+                           this->direction == Direction::Right) ? 4 : 0);
+
+  return imageIndex + rightOffset + (this->holdingPackage ? 0 : 1);
 
 }
 
@@ -251,19 +272,15 @@ void Player::move() {
     case Direction::Right:
       {
         this->position++;
-  Serial.print("Index ");
-  Serial.println(this->getTurtleIndex());
 
         uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
 
         if (posData == TURTLE_INDEX_LAST) {
-  Serial.println("Last Index");
 
-          this->position = this->position - 21;
-          
-  Serial.println(this->getTurtleIndex());
+          this->position = this->position - 11;//21;
 
         }
+
       }
 
       break;

@@ -26,6 +26,6 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
     void render(StateMachine & machine) override;
 
   private:
-    uint8_t getDisabledFish();
+    uint8_t getDisabledFish(StateMachine &machine);
 
 };

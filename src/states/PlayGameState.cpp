@@ -86,7 +86,7 @@ void PlayGameState::update(StateMachine & machine) {
     if (this->launchFishCounter == 0) {
 
       this->launchFishCounter = random(120, 180);
-      uint8_t fishIndex = getDisabledFish();
+      uint8_t fishIndex = getDisabledFish(machine);
 
       if (fishIndex != FISH_NONE) {
 
@@ -104,7 +104,7 @@ void PlayGameState::update(StateMachine & machine) {
     if (this->stickHeadUpCounter == 0) {
 
       this->stickHeadUpCounter = random(200, 240);
-      uint8_t fishIndex = getDisabledFish();
+      uint8_t fishIndex = getDisabledFish(machine);
 
       if (fishIndex != FISH_NONE) {
 
@@ -189,7 +189,9 @@ void PlayGameState::update(StateMachine & machine) {
 // ----------------------------------------------------------------------------
 //  Get a random fish that is disabled .. 
 //
-uint8_t PlayGameState::getDisabledFish() {
+uint8_t PlayGameState::getDisabledFish(StateMachine & machine) {
+
+  auto & gameStats = machine.getContext().gameStats;
   
   uint8_t fishes[5];
   uint8_t fishCount = 0;
@@ -198,7 +200,7 @@ uint8_t PlayGameState::getDisabledFish() {
   
     auto fish = this->fishes[x];
 
-    if (!fish.getEnabled()) {
+    if (!fish.getEnabled() && (gameStats.mode == GameMode::Hard || (gameStats.mode == GameMode::Easy && x != 2))) {
       fishes[fishCount] = x;
       fishCount++;
     }
@@ -241,6 +243,13 @@ void PlayGameState::render(StateMachine & machine) {
 
 
   // Render turtles ..
+  // SpritesB::drawExternalMask(0, 34, Images::Water_01, Images::Water_01_Mask, 0, 0);
+  // SpritesB::drawExternalMask(12, 33 - (this->turtles[0].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  // SpritesB::drawExternalMask(33, 33 - (this->turtles[1].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  // SpritesB::drawExternalMask(54, 33 - (this->turtles[2].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  // SpritesB::drawExternalMask(75, 33 - (this->turtles[3].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  // SpritesB::drawExternalMask(96, 33 - (this->turtles[4].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  // SpritesB::drawExternalMask(117, 34, Images::Water_03, Images::Water_03_Mask, 0, 0);
 
   for (auto &turtle : this->turtles) {
   
@@ -259,6 +268,9 @@ void PlayGameState::render(StateMachine & machine) {
   BaseState::renderScore(machine, false, 0);
 
 
+  SpritesB::drawExternalMask(110, 3, Images::Recipient, Images::Recipient_Mask, 0, 0);
+
+
   // Render player ..
 
   uint8_t turtleIndex = this->player.getTurtleIndex();
@@ -266,10 +278,13 @@ void PlayGameState::render(StateMachine & machine) {
 
   SpritesB::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(turtleIndex != TURTLE_NONE ? (turtle.getBobUp() ? 1 : 0) : 0), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
 
-//  SpritesB::drawExternalMask(0, 34, Images::Water, Images::Water_Mask, 0, 0);
-  SpritesB::drawExternalMask(0, 34 - (this->turtles[0].getBobUp() ? 1 : 0), Images::Water_01, Images::Water_01_Mask, 0, 0);
-  SpritesB::drawExternalMask(43, 34 - (this->turtles[2].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  SpritesB::drawExternalMask(85, 34 - (this->turtles[4].getBobUp() ? 1 : 0), Images::Water_03, Images::Water_03_Mask, 0, 0);
+  SpritesB::drawExternalMask(0, 34, Images::Water_01, Images::Water_01_Mask, 0, 0);
+  SpritesB::drawExternalMask(12, 33 - (this->turtles[0].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  SpritesB::drawExternalMask(33, 33 - (this->turtles[1].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  SpritesB::drawExternalMask(54, 33 - (this->turtles[2].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  SpritesB::drawExternalMask(75, 33 - (this->turtles[3].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  SpritesB::drawExternalMask(96, 33 - (this->turtles[4].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
+  SpritesB::drawExternalMask(117, 34, Images::Water_03, Images::Water_03_Mask, 0, 0);
 
 
   BaseState::renderGameOverOrPause(machine);
