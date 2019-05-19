@@ -40,6 +40,7 @@ class Turtle {
     uint8_t y;
     uint8_t returnToLookingDown;
     uint8_t bobUpDown;
+ 
     TurtleMode mode = TurtleMode::LookingDown;
     TurtleType type = TurtleType::Black;
     Direction direction;

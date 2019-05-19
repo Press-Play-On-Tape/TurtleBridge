@@ -145,6 +145,54 @@ const int8_t PROGMEM positionData[] = {
 
 };
 
+#define DEAD_INDEX_MAX 28
+const int8_t PROGMEM positionData_Dead[] = { 
+
+  5, 31, static_cast<int8_t>(Player_Positions::None), 0,
+
+  5, 31, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 31, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 31, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+
+  5, 31, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 30, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 29, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+
+  5, 28, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 27, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 26, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+
+  5, 25, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 24, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 23, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+
+  5, 22, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 21, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 20, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+
+  5, 19, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 18, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 17, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+
+  5, 16, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 15, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 14, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+
+  5, 13, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 12, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 11, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+
+  5, 10, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 9, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  4, 8, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+
+  3, 7, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  2, 6, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  1, 5, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+
+  0, 4, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+
+};
 
 Player::Player() { 
 
@@ -152,13 +200,33 @@ Player::Player() {
 
 int8_t Player::getDisplayX() {
 
-  return pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS]);
+  int8_t x = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS]);
+
+  if (dead == 0) {
+    return x;
+  }
+  else {
+
+    int8_t xOffset = pgm_read_byte(&positionData_Dead[this->dead * NUM_OF_ELEMENTS]);
+    return x + xOffset;
+
+  }
 
 }
 
 int8_t Player::getDisplayY(uint8_t offset) {
 
-  return pgm_read_byte(&positionData[(this->position * NUM_OF_ELEMENTS) + 1]) - offset + 2;
+  int8_t y = pgm_read_byte(&positionData[(this->position * NUM_OF_ELEMENTS) + 1]) - offset + 2;
+
+  if (dead == 0) {
+    return y;
+  }
+  else {
+   
+    int8_t yOffset = pgm_read_byte(&positionData_Dead[(this->dead * NUM_OF_ELEMENTS) + 1]) - offset + 2;
+    return y + yOffset;
+
+  }
 
 }
 
@@ -182,12 +250,23 @@ Direction Player::getDirection() {
 
 uint8_t Player::getImageIndex() {
 
-  uint8_t imageIndex = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 2);
-  uint8_t rightOffset = (((static_cast<Player_Positions>(imageIndex) == Player_Positions::Jumping_Left_01 ||
-                           static_cast<Player_Positions>(imageIndex) == Player_Positions::Jumping_Left_02) &&
-                           this->direction == Direction::Right) ? 4 : 0);
+  if (dead == 0) {
 
-  return imageIndex + rightOffset + (this->holdingPackage ? 1 : 0);
+    uint8_t imageIndex = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 2);
+    uint8_t rightOffset = (((static_cast<Player_Positions>(imageIndex) == Player_Positions::Jumping_Left_01 ||
+                            static_cast<Player_Positions>(imageIndex) == Player_Positions::Jumping_Left_02) &&
+                            this->direction == Direction::Right) ? 4 : 0);
+
+    return imageIndex + rightOffset + (this->holdingPackage ? 1 : 0);
+  }
+  else {
+
+Serial.print("getImageIndex() dead: ");
+Serial.println(dead);
+
+    return pgm_read_byte(&positionData_Dead[this->dead * NUM_OF_ELEMENTS] + 2);
+
+  }
 
 }
 
@@ -219,7 +298,7 @@ void Player::setDirection(Direction direction) {
 // Methods ..
 
 bool Player::canMoveLeft() {
-
+  
   return this->position > 0;
 
 }
@@ -242,43 +321,103 @@ void Player::moveRight() {
 
 }
 
-void Player::move() {
+void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Diving, bool turtle_3_Diving, bool turtle_4_Diving) {
 
   uint8_t turtleIndex = this->getTurtleIndex();
   this->turtleIndexPrev = (this->turtleIndexPrev != turtleIndex ? turtleIndex : TURTLE_NONE);
 
-  switch (this->direction) {
+  if (dead == 0) {
 
-    case Direction::Left:
-      this->position--;
-      break;
+    switch (this->direction) {
 
-    case Direction::Right:
-      {
-        this->position++;
+      case Direction::Left:
+        this->position--;
+        break;
 
-        uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
+      case Direction::Right:
+        {
+          this->position++;
 
-        if (posData == TURTLE_INDEX_LAST) {
+          uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
 
-          this->position = this->position - 11;//21;
+          if (posData == TURTLE_INDEX_LAST) {
+
+            this->position = this->position - 11;//21;
+
+          }
 
         }
 
+        break;
+
+      default:
+        break;
+
+    }
+
+    uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
+
+    if (posData > 0 && posData < POSITION_HAND_OVER_PACKAGE) {
+Serial.print("check ");
+Serial.print(turtle_0_Diving);
+Serial.print(" ");
+Serial.print(turtle_1_Diving);
+Serial.print(" ");
+Serial.print(turtle_2_Diving);
+Serial.print(" ");
+Serial.print(turtle_3_Diving);
+Serial.print(" ");
+Serial.print(turtle_4_Diving);
+Serial.println(" ");
+      this->direction = Direction::None;
+
+      switch (posData - POSITION_TURTLE_0) {
+
+        case 0:
+          if (turtle_0_Diving) {
+Serial.println("dead on turtle 0 ");
+            this->dead = DEAD_INDEX_MAX;
+          }
+          break;
+
+        case 1:
+          if (turtle_1_Diving) {
+Serial.println("dead on turtle 1 ");
+            this->dead = DEAD_INDEX_MAX;
+          }
+          break;
+
+        case 2:
+          if (turtle_2_Diving) {
+Serial.println("dead on turtle 2 ");
+            this->dead = DEAD_INDEX_MAX;
+          }
+          break;
+
+        case 3:
+          if (turtle_3_Diving) {
+Serial.println("dead on turtle 3 ");
+            this->dead = DEAD_INDEX_MAX;
+          }
+          break;
+
+        case 4:
+          if (turtle_4_Diving) {
+Serial.println("dead on turtle 4 ");
+            this->dead = DEAD_INDEX_MAX;
+          }
+          break;
+          
       }
 
-      break;
-
-    default:
-      break;
+    }
 
   }
+  else {
 
-  uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
+    this->dead--;
 
-  if (posData > 0 && posData < POSITION_HAND_OVER_PACKAGE) {
-
-    this->direction = Direction::None;
+    if (this->dead == 0) this->dead = 4;
 
   }
 

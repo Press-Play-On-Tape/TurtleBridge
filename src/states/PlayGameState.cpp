@@ -127,17 +127,22 @@ void PlayGameState::update(StateMachine & machine) {
     // if ((justPressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.moveLeft(); }
     // if ((justPressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.moveRight(); }
     if (arduboy.everyXFrames(2)) {
-    if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { 
-//      this->player.moveLeft(); 
-      this->player.setDirection(Direction::Left);
+        
+      if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { 
+  //      this->player.moveLeft(); 
+        this->player.setDirection(Direction::Left);
+        }
+      if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { 
+        this->player.setDirection(Direction::Right);
+      //  this->player.moveRight(); 
       }
-    if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { 
-      this->player.setDirection(Direction::Right);
-    //  this->player.moveRight(); 
-    }
     
-      this->player.move();
-
+      this->player.move(this->turtles[0].getMode() == TurtleMode::Diving, 
+                        this->turtles[1].getMode() == TurtleMode::Diving, 
+                        this->turtles[2].getMode() == TurtleMode::Diving, 
+                        this->turtles[3].getMode() == TurtleMode::Diving, 
+                        this->turtles[4].getMode() == TurtleMode::Diving);
+      
       if (this->player.isPackagePosition() && this->player.isHoldingPackage()) {
         gameStats.score++;
         this->player.setHoldingPackage(false);

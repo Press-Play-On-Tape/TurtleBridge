@@ -71,6 +71,7 @@ enum class Player_Positions : int8_t {
   Drowning_02,
   Giving,
   Giving_WithPackage,
+  None
 };
 
 enum class GameStateType : uint8_t {
