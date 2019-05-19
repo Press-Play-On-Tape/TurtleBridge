@@ -83,7 +83,7 @@ void TitleScreenState::render(StateMachine & machine) {
   BaseState::renderCommonScenery(machine);
   BaseState::renderWater();
 
-  Sprites::drawExternalMask(27, 10, Images::Title, Images::Title_Mask, 0, 0);
+  Sprites::drawExternalMask(27, 9, Images::Title, Images::Title_Mask, 0, 0);
 
   if (this->pressACounter == PRESS_A_DELAY) {
 
