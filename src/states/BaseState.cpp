@@ -126,3 +126,59 @@ void BaseState::renderGameOverOrPause(StateMachine & machine) {
   }
 
 }
+
+
+void BaseState::initWater() {
+
+  int8_t y = 0;
+
+  for (uint8_t x = 0; x < 12; x++) {
+
+    switch (y) {
+      
+      case -1 ... 1:
+        this->waterLevel[x] = y;
+        break;
+
+      case 2:
+        this->waterLevel[x] = 0;
+        break;
+
+    }
+
+    y++;
+    if (y==3) y = -1;
+
+  }
+
+}
+
+void BaseState::updateWater(StateMachine & machine) {
+
+  auto & arduboy = machine.getContext().arduboy;
+
+  if (arduboy.everyXFrames(16)) {
+
+    uint8_t firstElement = this->waterLevel[0];
+  
+    for (uint8_t x = 0; x < 11; x++) {
+
+      this->waterLevel[x] = this->waterLevel[x + 1];
+
+    }
+
+    this->waterLevel[11] = firstElement;
+
+  }
+
+}
+
+void BaseState::renderWater() {
+
+  SpritesB::drawExternalMask(0, 33 + this->waterLevel[0], Images::Water_01, Images::Water_01_Mask, 0, 0);
+  for (uint8_t x = 1; x < 11; x++) {
+    SpritesB::drawExternalMask(4 + (x * 10), 33 + this->waterLevel[x], Images::Water_02, Images::Water_02_Mask, 0, 0);
+  }
+  SpritesB::drawExternalMask(114, 33 + this->waterLevel[11], Images::Water_03, Images::Water_03_Mask, 0, 0);
+
+}

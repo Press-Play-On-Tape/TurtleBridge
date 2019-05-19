@@ -15,10 +15,15 @@ class BaseState : public GameState<GameContext, GameStateType> {
     bool getPaused();
     void setPaused(bool value);
 
+    void initWater();
+    void updateWater(StateMachine & machine);
+    void renderWater();
+
 	private:
 
     bool paused = false;
     bool seaweed = true; 
     uint8_t backgroundX = 0;
+    int8_t waterLevel[12];
 
 };

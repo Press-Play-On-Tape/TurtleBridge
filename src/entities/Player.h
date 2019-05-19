@@ -29,10 +29,12 @@ class Player {
     void move();
     uint8_t getImageIndex();
     uint8_t getTurtleIndex();
+    uint8_t getTurtleIndexPrev();
 
   protected:
 
     uint8_t position;
+    uint8_t turtleIndexPrev = TURTLE_NONE;
     bool holdingPackage;
     Direction direction = Direction::None;
 

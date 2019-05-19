@@ -18,6 +18,8 @@ void TitleScreenState::activate(StateMachine & machine) {
 	
   gameStats.resetGame();
   sound.setOutputEnabled(arduboy.audio.enabled);
+
+  BaseState::initWater();
   //sound.tones(Sounds::Score);
 
 }
@@ -53,13 +55,15 @@ void TitleScreenState::update(StateMachine & machine) {
 	// Handle other input ..
 
 	if (justPressed & A_BUTTON) {
-		machine.changeState(GameStateType::GameIntroScreen, GameStateType::PlayGameScreen); 
+		machine.changeState(GameStateType::PlayGameScreen, GameStateType::None); 
 	}
 
 	if (justPressed & B_BUTTON) {
 		machine.changeState(GameStateType::HighScoreScreen, GameStateType::None); 
 	}
 
+
+  BaseState::updateWater(machine);
 
 
   // Update 'Press A' counter / delay ..
@@ -77,14 +81,16 @@ void TitleScreenState::render(StateMachine & machine) {
   auto & arduboy = machine.getContext().arduboy;
 
   BaseState::renderCommonScenery(machine);
-  Sprites::drawExternalMask(27, 9, Images::Title, Images::Title_Mask, 0, 0);
+  BaseState::renderWater();
+
+  Sprites::drawExternalMask(27, 10, Images::Title, Images::Title_Mask, 0, 0);
 
   if (this->pressACounter == PRESS_A_DELAY) {
 
-    SpritesB::drawExternalMask(26, 40, Images::PressA, Images::PressA_Mask, 0, 0);
+    SpritesB::drawExternalMask(26, 41, Images::PressAandB, Images::PressAandB_Mask, 0, 0);
 
   }
 
-	arduboy.display(true);
+  arduboy.displayWithBackground();
 
 }

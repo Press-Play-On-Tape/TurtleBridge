@@ -21,8 +21,7 @@ namespace EEPROM_Utils {
   void writeSaveEntryScore(uint16_t score, uint8_t saveIndex);
   
   template< size_t size >
-  void readSaveEntries(SaveEntry (&entries)[size])
-  {
+  void readSaveEntries(SaveEntry (&entries)[size]) {
     constexpr size_t count = (size <= eepromSaveEntriesCount) ? size : eepromSaveEntriesCount;
     for(size_t index = 0; index < count; ++index)
       readSaveEntry(entries[index], index);

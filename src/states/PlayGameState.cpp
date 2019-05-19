@@ -57,6 +57,42 @@ void PlayGameState::activate(StateMachine & machine) {
   this->launchFishCounter = random(120, 180);
   this->stickHeadUpCounter = random(200, 240);
 
+  // int8_t y = 0;
+
+  // for (uint8_t x = 0; x < 12; x++) {
+  //   // switch (x) {
+  //   //   case 0 ... 2:
+  //   //     this->waterLevel[x] = 0;
+  //   //     break;
+  //   //   case 3 ... 5:
+  //   //     this->waterLevel[x] = 1;
+  //   //     break;
+  //   //   case 6 ... 8:
+  //   //     this->waterLevel[x] = 0;
+  //   //     break;
+  //   //   case 9 ... 11:
+  //   //     this->waterLevel[x] = -1;
+  //   //     break;
+
+  //   // }
+
+  //   // -1  0  1  2   
+  //   switch (y) {
+  //     case -1 ... 1:
+  //       this->waterLevel[x] = y;
+  //       break;
+
+  //     case 2:
+  //       this->waterLevel[x] = 0;
+  //       break;
+
+  //   }
+
+  //   y++;
+  //   if (y==3) y = -1;
+  // }
+  
+  BaseState::initWater();
   BaseState::setPaused(false);
   sound.setOutputEnabled(arduboy.audio.enabled);
 
@@ -103,15 +139,33 @@ void PlayGameState::update(StateMachine & machine) {
 
     if (this->stickHeadUpCounter == 0) {
 
-      this->stickHeadUpCounter = random(200, 240);
-      uint8_t fishIndex = getDisabledFish(machine);
+      uint8_t turtleIndex = this->player.getTurtleIndex();
+      uint8_t turtleIndexPrev = this->player.getTurtleIndexPrev();
 
-      if (fishIndex != FISH_NONE) {
+      if (turtleIndexPrev != TURTLE_NONE && turtleIndex == TURTLE_NONE) {
 
-        auto &turtle = this->turtles[fishIndex];
-        turtle.setMode(TurtleMode::LookingUp);
+        auto &fish = this->fishes[turtleIndexPrev];
+
+        if (!fish.getEnabled()) {   
+
+          auto &turtle = this->turtles[turtleIndexPrev];
+          this->stickHeadUpCounter = random(160, 200);
+          turtle.setMode(TurtleMode::LookingUp);
+
+        }
 
       }
+
+
+//      this->stickHeadUpCounter = random(200, 240);
+      // uint8_t fishIndex = getDisabledFish(machine);
+
+      // if (fishIndex != FISH_NONE) {
+
+      //   auto &turtle = this->turtles[fishIndex];
+      //   turtle.setMode(TurtleMode::LookingUp);
+
+      // }
 
     }
 
@@ -153,7 +207,20 @@ void PlayGameState::update(StateMachine & machine) {
 
     }
 
+    // uint8_t firstElement = this->waterLevel[0];
+  
+    // for (uint8_t x = 0; x < 11; x++) {
+
+    //   this->waterLevel[x] = this->waterLevel[x + 1];
+
+    // }
+
+    // this->waterLevel[11] = firstElement;
+
   }
+
+
+  BaseState::updateWater(machine);
 
 
   // Update fish locations ..
@@ -243,13 +310,6 @@ void PlayGameState::render(StateMachine & machine) {
 
 
   // Render turtles ..
-  // SpritesB::drawExternalMask(0, 34, Images::Water_01, Images::Water_01_Mask, 0, 0);
-  // SpritesB::drawExternalMask(12, 33 - (this->turtles[0].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  // SpritesB::drawExternalMask(33, 33 - (this->turtles[1].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  // SpritesB::drawExternalMask(54, 33 - (this->turtles[2].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  // SpritesB::drawExternalMask(75, 33 - (this->turtles[3].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  // SpritesB::drawExternalMask(96, 33 - (this->turtles[4].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  // SpritesB::drawExternalMask(117, 34, Images::Water_03, Images::Water_03_Mask, 0, 0);
 
   for (auto &turtle : this->turtles) {
   
@@ -278,16 +338,15 @@ void PlayGameState::render(StateMachine & machine) {
 
   SpritesB::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(turtleIndex != TURTLE_NONE ? (turtle.getBobUp() ? 1 : 0) : 0), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
 
-  SpritesB::drawExternalMask(0, 34, Images::Water_01, Images::Water_01_Mask, 0, 0);
-  SpritesB::drawExternalMask(12, 33 - (this->turtles[0].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  SpritesB::drawExternalMask(33, 33 - (this->turtles[1].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  SpritesB::drawExternalMask(54, 33 - (this->turtles[2].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  SpritesB::drawExternalMask(75, 33 - (this->turtles[3].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  SpritesB::drawExternalMask(96, 33 - (this->turtles[4].getBobUp() ? 1 : 0), Images::Water_02, Images::Water_02_Mask, 0, 0);
-  SpritesB::drawExternalMask(117, 34, Images::Water_03, Images::Water_03_Mask, 0, 0);
+  BaseState::renderWater();
+  // SpritesB::drawExternalMask(0, 33 + this->waterLevel[0], Images::Water_01, Images::Water_01_Mask, 0, 0);
+  // for (uint8_t x = 1; x < 11; x++) {
+  //   SpritesB::drawExternalMask(4 + (x * 10), 33 + this->waterLevel[x], Images::Water_02, Images::Water_02_Mask, 0, 0);
+  // }
+  // SpritesB::drawExternalMask(114, 33 + this->waterLevel[11], Images::Water_03, Images::Water_03_Mask, 0, 0);
 
 
   BaseState::renderGameOverOrPause(machine);
-  arduboy.display(true);
+  arduboy.displayWithBackground();
 
 }

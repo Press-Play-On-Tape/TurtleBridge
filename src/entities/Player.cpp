@@ -8,11 +8,11 @@
 
 const int8_t PROGMEM positionData[] = { 
 
-  -4, -9, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 1,
-  -3, -10, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  -2, -11, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  -1, -12, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  0, -12, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
+  -4, -7, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 1,
+  -3, -7, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+  -2, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
+  -1, -10, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
+  0, -11, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
   1, -12, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   2, -11, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   3, -11, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
@@ -122,36 +122,6 @@ const int8_t PROGMEM positionData[] = {
 
   95, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 6,
 
-  // 96, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  // 97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  // 98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-
-  // 99, -3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  // 100, -5, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  // 101, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
-
-  // 102, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
-  // 103, -9, static_cast<int8_t>(Player_Positions::Giving), 0,
-  // 104, -9, static_cast<int8_t>(Player_Positions::Giving), 0,
-
-  // 105, -10, static_cast<int8_t>(Player_Positions::Giving), 0,
-  // 105, -10, static_cast<int8_t>(Player_Positions::Giving), 0,
-  // 104, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-
-  // 103, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  // 102, -8, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  // 101, -7, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-
-  // 100, -5, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
-  // 99, -3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  // 98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-
-  // 97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-  // 95, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-
-  // 95, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 7,
-
-
   96, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
@@ -159,11 +129,9 @@ const int8_t PROGMEM positionData[] = {
   99, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
   100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
   100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
-
   99, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
   98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-
   95, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
 
   95, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 7,
@@ -190,6 +158,12 @@ int8_t Player::getDisplayY(uint8_t offset) {
 uint8_t Player::getPosition() {
 
   return this->position;
+
+}
+
+uint8_t Player::getTurtleIndexPrev() {
+
+  return this->turtleIndexPrev;
 
 }
 
@@ -262,6 +236,9 @@ void Player::moveRight() {
 }
 
 void Player::move() {
+
+  uint8_t turtleIndex = this->getTurtleIndex();
+  this->turtleIndexPrev = (this->turtleIndexPrev != turtleIndex ? turtleIndex : TURTLE_NONE);
 
   switch (this->direction) {
 

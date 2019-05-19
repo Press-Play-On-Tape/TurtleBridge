@@ -48,7 +48,7 @@
 
 #define NO_WINNER 255
 
-constexpr size_t eepromStart = 120;
+constexpr size_t eepromStart = 170;
 constexpr size_t eepromStart_C1 = eepromStart + 1;
 constexpr size_t eepromStart_C2 = eepromStart + 2;
 constexpr size_t eepromSaveEntriesCount = 3;

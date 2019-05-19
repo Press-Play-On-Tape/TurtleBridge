@@ -20,6 +20,7 @@ void HighScoreState::activate(StateMachine & machine) {
 
   // Retrieve existing names and scores ..
   EEPROM_Utils::readSaveEntries(this->players);
+  BaseState::initWater();
 
 }
 
@@ -139,6 +140,8 @@ void HighScoreState::update(StateMachine & machine) {
 
   if (this->pressACounter > 0) this->pressACounter--;
 
+  BaseState::updateWater(machine);
+
 }
 
 
@@ -169,8 +172,10 @@ void HighScoreState::render(StateMachine & machine) {
 	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
 
   BaseState::renderCommonScenery(machine);
-  SpritesB::drawExternalMask(30, 3, Images::HighscoreText, Images::HighscoreText_Mask, 0, 0);
+  BaseState::renderWater();
+
   SpritesB::drawExternalMask(28, 16, Images::HighscorePanel, Images::HighscorePanel_Mask, 0, 0);
+  SpritesB::drawExternalMask(22, -1, Images::HighscoreText, Images::HighscoreText_Mask, 0, 0);
   
 
 
@@ -198,10 +203,10 @@ void HighScoreState::render(StateMachine & machine) {
 
   if (this->winnerIdx == NO_WINNER && this->pressACounter == 0) {
 
-    SpritesB::drawOverwrite(43, 52, Images::PressA, 0);
+    SpritesB::drawExternalMask(48, 53, Images::Highscore_PressA, Images::Highscore_PressA_Mask, 0, 0);
 
   }
 
-  arduboy.display(true);
+  arduboy.displayWithBackground();
 
 }
