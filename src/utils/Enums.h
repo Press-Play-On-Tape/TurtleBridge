@@ -42,7 +42,7 @@
 
 #define HS_NAME_LEFT 36
 #define HS_SCORE_LEFT 69
-#define HS_CHAR_TOP 22
+#define HS_CHAR_TOP 24
 #define HS_CHAR_V_SPACING 9
 #define HS_PRESS_A_DELAY 100
 

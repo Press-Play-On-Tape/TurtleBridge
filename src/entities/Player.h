@@ -31,6 +31,9 @@ class Player {
     uint8_t getTurtleIndex();
     uint8_t getTurtleIndexPrev();
 
+    bool isPackagePosition();
+    bool isLeftCliffPosition();
+
   protected:
 
     uint8_t position;

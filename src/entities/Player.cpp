@@ -6,9 +6,17 @@
 #define NUM_OF_ELEMENTS 4
 #define TURTLE_INDEX_LAST 7
 
+#define POSITION_LEFT_CLIFF 1
+#define POSITION_TURTLE_0 2
+#define POSITION_TURTLE_1 3
+#define POSITION_TURTLE_2 4
+#define POSITION_TURTLE_3 5
+#define POSITION_TURTLE_4 6
+#define POSITION_HAND_OVER_PACKAGE 8
+
 const int8_t PROGMEM positionData[] = { 
 
-  -4, -7, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 1,
+  -4, -7, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), POSITION_LEFT_CLIFF,
   -3, -7, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   -2, -9, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   -1, -10, static_cast<int8_t>(Player_Positions::Jumping_Left_02), 0,
@@ -28,7 +36,7 @@ const int8_t PROGMEM positionData[] = {
   12, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   13, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
 
-  14, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 2,
+  14, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), POSITION_TURTLE_0,
 
   15, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   16, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
@@ -51,7 +59,7 @@ const int8_t PROGMEM positionData[] = {
   33, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   34, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   
-  35, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 3,
+  35, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), POSITION_TURTLE_1,
 
   37, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   38, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
@@ -74,7 +82,7 @@ const int8_t PROGMEM positionData[] = {
   55, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   56, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
 
-  56, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 4,
+  56, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), POSITION_TURTLE_2,
 
   56, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   57, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
@@ -97,7 +105,7 @@ const int8_t PROGMEM positionData[] = {
   73, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   74, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
 
-  74, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 5,
+  74, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), POSITION_TURTLE_3,
 
   75, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   76, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
@@ -120,14 +128,13 @@ const int8_t PROGMEM positionData[] = {
   93, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   94, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
 
-  95, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), 6,
+  95, 3, static_cast<int8_t>(Player_Positions::Standing_ArmsDown), POSITION_TURTLE_4,
 
   96, 3, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
-
   99, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
-  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), POSITION_HAND_OVER_PACKAGE,
   100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
   99, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
   98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
@@ -180,7 +187,7 @@ uint8_t Player::getImageIndex() {
                            static_cast<Player_Positions>(imageIndex) == Player_Positions::Jumping_Left_02) &&
                            this->direction == Direction::Right) ? 4 : 0);
 
-  return imageIndex + rightOffset + (this->holdingPackage ? 0 : 1);
+  return imageIndex + rightOffset + (this->holdingPackage ? 1 : 0);
 
 }
 
@@ -267,7 +274,9 @@ void Player::move() {
 
   }
 
-  if (pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3) != 0) {
+  uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
+
+  if (posData > 0 && posData < POSITION_HAND_OVER_PACKAGE) {
 
     this->direction = Direction::None;
 
@@ -280,12 +289,26 @@ uint8_t Player::getTurtleIndex() {
   uint8_t turtleIndex = TURTLE_NONE;
   uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
 
-  if (posData != 0) {
+  if (posData > 0 && posData < POSITION_HAND_OVER_PACKAGE) {
 
-    turtleIndex = posData - 2;
+    turtleIndex = posData - POSITION_TURTLE_0;
 
   }
 
   return turtleIndex;
+
+}
+
+bool Player::isPackagePosition() {
+
+  uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
+  return (posData == POSITION_HAND_OVER_PACKAGE);
+
+}
+
+
+bool Player::isLeftCliffPosition() {
+
+  return (this->position == 0);
 
 }

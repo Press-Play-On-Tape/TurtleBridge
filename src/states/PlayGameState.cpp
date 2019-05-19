@@ -50,47 +50,10 @@ void PlayGameState::activate(StateMachine & machine) {
 
   }
 
-
-
   this->player.setPosition(0);
-
+  this->player.setHoldingPackage(true);
   this->launchFishCounter = random(120, 180);
   this->stickHeadUpCounter = random(200, 240);
-
-  // int8_t y = 0;
-
-  // for (uint8_t x = 0; x < 12; x++) {
-  //   // switch (x) {
-  //   //   case 0 ... 2:
-  //   //     this->waterLevel[x] = 0;
-  //   //     break;
-  //   //   case 3 ... 5:
-  //   //     this->waterLevel[x] = 1;
-  //   //     break;
-  //   //   case 6 ... 8:
-  //   //     this->waterLevel[x] = 0;
-  //   //     break;
-  //   //   case 9 ... 11:
-  //   //     this->waterLevel[x] = -1;
-  //   //     break;
-
-  //   // }
-
-  //   // -1  0  1  2   
-  //   switch (y) {
-  //     case -1 ... 1:
-  //       this->waterLevel[x] = y;
-  //       break;
-
-  //     case 2:
-  //       this->waterLevel[x] = 0;
-  //       break;
-
-  //   }
-
-  //   y++;
-  //   if (y==3) y = -1;
-  // }
   
   BaseState::initWater();
   BaseState::setPaused(false);
@@ -142,7 +105,8 @@ void PlayGameState::update(StateMachine & machine) {
       uint8_t turtleIndex = this->player.getTurtleIndex();
       uint8_t turtleIndexPrev = this->player.getTurtleIndexPrev();
 
-      if (turtleIndexPrev != TURTLE_NONE && turtleIndex == TURTLE_NONE) {
+      if (turtleIndexPrev != TURTLE_NONE && turtleIndex == TURTLE_NONE && 
+        (turtleIndexPrev !=5 || (turtleIndexPrev ==5 && this->player.getDirection() == Direction::Left))) {
 
         auto &fish = this->fishes[turtleIndexPrev];
 
@@ -156,24 +120,13 @@ void PlayGameState::update(StateMachine & machine) {
 
       }
 
-
-//      this->stickHeadUpCounter = random(200, 240);
-      // uint8_t fishIndex = getDisabledFish(machine);
-
-      // if (fishIndex != FISH_NONE) {
-
-      //   auto &turtle = this->turtles[fishIndex];
-      //   turtle.setMode(TurtleMode::LookingUp);
-
-      // }
-
     }
 
     // Update player position ..
 
     // if ((justPressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.moveLeft(); }
     // if ((justPressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.moveRight(); }
-      if (arduboy.everyXFrames(2)) {
+    if (arduboy.everyXFrames(2)) {
     if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { 
 //      this->player.moveLeft(); 
       this->player.setDirection(Direction::Left);
@@ -183,7 +136,18 @@ void PlayGameState::update(StateMachine & machine) {
     //  this->player.moveRight(); 
     }
     
-      player.move();
+      this->player.move();
+
+      if (this->player.isPackagePosition() && this->player.isHoldingPackage()) {
+        gameStats.score++;
+        this->player.setHoldingPackage(false);
+        this->newPackage = true;
+      }
+
+      if (this->player.isLeftCliffPosition() && this->newPackage) {
+        this->player.setHoldingPackage(true);
+        this->newPackage = false;
+      }
 
     }
 
@@ -320,6 +284,14 @@ void PlayGameState::render(StateMachine & machine) {
       SpritesB::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle_01, Images::Turtle_01_Mask, turtle.getImageIndex(), turtle.getImageIndex());
     }
 
+  }
+
+
+
+  // Render package ..
+
+  if (this->newPackage) {
+    SpritesB::drawExternalMask(1, 3, Images::Package, Images::Package_Mask, 0, 0);
   }
 
 
