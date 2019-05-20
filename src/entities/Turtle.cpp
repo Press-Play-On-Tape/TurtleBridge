@@ -115,15 +115,36 @@ uint8_t Turtle::getDisplayY() {
 
       switch (this->returnToLookingDown) {
 
+        // case 0 ... 3:
+        //   return this->y + 2;
+        // case 4 ... 6:
+        //   return this->y + 4;
+        // case 7 ... 12:
+        //   return this->y + 7;
+        // case 13 ... 15:
+        //   return this->y + 4;
+        // case 16 ... 18:
+        //   return this->y + 2;
+
         case 0 ... 3:
           return this->y + 2;
         case 4 ... 6:
           return this->y + 4;
         case 7 ... 12:
-          return this->y + 7;
+          return this->y + 6;
         case 13 ... 15:
-          return this->y + 4;
+          return this->y + 8;
         case 16 ... 18:
+          return this->y + 10;
+        case 19 ... 21:
+          return this->y + 10;
+        case 22 ... 24:
+          return this->y + 8;
+        case 25 ... 27:
+          return this->y + 6;
+        case 28 ... 30:
+          return this->y + 4;
+        case 31 ... 33:
           return this->y + 2;
         
         default : return this->y;

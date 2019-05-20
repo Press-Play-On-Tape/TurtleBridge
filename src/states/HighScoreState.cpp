@@ -174,7 +174,7 @@ void HighScoreState::render(StateMachine & machine) {
   BaseState::renderCommonScenery(machine);
   BaseState::renderWater();
 
-  SpritesB::drawExternalMask(28, 18, Images::HighscorePanel, Images::HighscorePanel_Mask, 0, 0);
+  SpritesB::drawExternalMask(29, 18, Images::HighscorePanel, Images::HighscorePanel_Mask, 0, 0);
   SpritesB::drawExternalMask(22, 3, Images::HighscoreText, Images::HighscoreText_Mask, 0, 0);
   
 

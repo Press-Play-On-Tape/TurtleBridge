@@ -145,52 +145,58 @@ const int8_t PROGMEM positionData[] = {
 
 };
 
-#define DEAD_INDEX_MAX 28
+#define DEAD_INDEX_MAX 37
 const int8_t PROGMEM positionData_Dead[] = { 
 
-  5, 31, static_cast<int8_t>(Player_Positions::None), 0,
+  5, 32, static_cast<int8_t>(Player_Positions::None), 0,
 
-  5, 31, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
-  5, 31, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
-  5, 31, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 32, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 32, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 32, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 32, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
 
-  5, 31, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
-  5, 30, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 32, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 32, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 32, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 32, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+
+  5, 32, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 31, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 30, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+
   5, 29, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
-
-  5, 28, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 28, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
   5, 27, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+
   5, 26, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
-
-  5, 25, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 25, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
   5, 24, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
-  5, 23, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
 
-  5, 22, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 23, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 22, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
   5, 21, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
-  5, 20, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
 
+  5, 20, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
   5, 19, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
   5, 18, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
-  5, 17, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
 
+  5, 17, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
   5, 16, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
-  5, 15, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
-  5, 14, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+  5, 15, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
 
+  5, 14, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
   5, 13, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
-  5, 12, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  5, 12, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
+
   5, 11, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
-
   5, 10, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
-  5, 9, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
-  4, 8, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  4, 9, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
 
-  3, 7, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
-  2, 6, static_cast<int8_t>(Player_Positions::Drowning_02), 0,
-  1, 5, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  3, 8, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  2, 7, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  1, 6, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
 
-  0, 4, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
+  0, 5, static_cast<int8_t>(Player_Positions::Drowning_01), 0,
 
 };
 
@@ -216,14 +222,15 @@ int8_t Player::getDisplayX() {
 
 int8_t Player::getDisplayY(uint8_t offset) {
 
-  int8_t y = pgm_read_byte(&positionData[(this->position * NUM_OF_ELEMENTS) + 1]) - offset + 2;
-
   if (dead == 0) {
-    return y;
+
+    return pgm_read_byte(&positionData[(this->position * NUM_OF_ELEMENTS) + 1]) - offset + 2;;
+
   }
   else {
    
-    int8_t yOffset = pgm_read_byte(&positionData_Dead[(this->dead * NUM_OF_ELEMENTS) + 1]) - offset + 2;
+    int8_t y = pgm_read_byte(&positionData[(this->position * NUM_OF_ELEMENTS) + 1]) + 2;
+    int8_t yOffset = pgm_read_byte(&positionData_Dead[(this->dead * NUM_OF_ELEMENTS) + 1]);
     return y + yOffset;
 
   }
@@ -417,7 +424,7 @@ Serial.println("dead on turtle 4 ");
 
     this->dead--;
 
-    if (this->dead == 0) this->dead = 4;
+    if (this->dead == 0) this->dead = 7;
 
   }
 
