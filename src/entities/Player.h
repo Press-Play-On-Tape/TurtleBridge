@@ -36,6 +36,7 @@ class Player {
     bool isPackagePosition();
     bool isLeftCliffPosition();
     bool isDead();
+    bool isDying();
 
   protected:
 

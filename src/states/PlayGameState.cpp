@@ -172,16 +172,35 @@ void PlayGameState::update(StateMachine & machine) {
                           this->turtles[2].getMode() == TurtleMode::Diving, 
                           this->turtles[3].getMode() == TurtleMode::Diving, 
                           this->turtles[4].getMode() == TurtleMode::Diving);
+
+
+        // Play note when on turtle's back ..
+
+        uint8_t turtleIndex = this->player.getTurtleIndex();
+
+        if (turtleIndex != TURTLE_NONE && turtleIndex != this->prevTurtleIndex) {
+          this->prevTurtleIndex = turtleIndex;
+          sound.tones(Sounds::Turtle);
+        }                  
         
-        if (this->player.isPackagePosition() && this->player.isHoldingPackage() && this->recipient.x < RECIPIENT_X_DEFAULT + 5) {
-          gameStats.score++;
-          this->player.setHoldingPackage(false);
-          this->newPackage = true;
+        if (this->player.isPackagePosition() && this->player.isHoldingPackage()) {
+
+          if (this->recipient.x < RECIPIENT_X_DEFAULT + 5) {
+            gameStats.score++;
+            this->player.setHoldingPackage(false);
+            this->newPackage = true;
+            sound.tones(Sounds::PackageDelivered);
+          }
+          else {
+            sound.tones(Sounds::PackageNotDelivered);
+          }
+
         }
 
         if (this->player.isLeftCliffPosition() && this->newPackage) {
           this->player.setHoldingPackage(true);
           this->newPackage = false;
+          sound.tones(Sounds::PackagePickedUp);
         }
 
 
@@ -259,6 +278,12 @@ void PlayGameState::update(StateMachine & machine) {
 
   // Has the player died ?
 
+  if (this->player.isDying() && !sound.playing()) {
+
+    sound.tones(Sounds::Drowning);
+
+  }
+
   if (this->player.isDead() && this->playing) {
 
     this->playing = false;
@@ -278,6 +303,7 @@ void PlayGameState::update(StateMachine & machine) {
 
     if ((justPressed & A_BUTTON) || (justPressed & LEFT_BUTTON)) {
 
+      sound.tones(Sounds::PackageNotDelivered);
       this->playing = true;
       this->player.initLife();
 
@@ -385,13 +411,7 @@ void PlayGameState::render(StateMachine & machine) {
   Turtle &turtle = this->turtles[turtleIndex != TURTLE_NONE ? turtleIndex : 0];
 
   Sprites::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(turtleIndex != TURTLE_NONE ? (turtle.getBobUp() ? 1 : 0) : 0), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
-
   BaseState::renderWater();
-  // Sprites::drawExternalMask(0, 33 + this->waterLevel[0], Images::Water_01, Images::Water_01_Mask, 0, 0);
-  // for (uint8_t x = 1; x < 11; x++) {
-  //   Sprites::drawExternalMask(4 + (x * 10), 33 + this->waterLevel[x], Images::Water_02, Images::Water_02_Mask, 0, 0);
-  // }
-  // Sprites::drawExternalMask(114, 33 + this->waterLevel[11], Images::Water_03, Images::Water_03_Mask, 0, 0);
 
 
   if (!this->playing && !gameStats.gameOver) {

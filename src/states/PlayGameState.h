@@ -38,6 +38,8 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
     Limit stickHeadUp;
 
     uint8_t bobWater = 0;
+    uint8_t prevTurtleIndex = 0;
+    
     bool newPackage = false;
     bool playing = false;
 

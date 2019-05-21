@@ -465,6 +465,12 @@ bool Player::isDead() {
 
 }
 
+bool Player::isDying() {
+
+  return (this->deadCounter > 1);
+
+}
+
 void Player::initLife() {
 
   this->deadCounter = 0;

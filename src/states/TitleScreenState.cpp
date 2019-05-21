@@ -20,7 +20,7 @@ void TitleScreenState::activate(StateMachine & machine) {
   sound.setOutputEnabled(arduboy.audio.enabled);
 
   BaseState::initWater();
-  //sound.tones(Sounds::Score);
+  sound.tones(Sounds::Score);
 
 }
 
