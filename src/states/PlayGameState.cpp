@@ -5,6 +5,11 @@
 #include "../images/Images.h"
 #include "../sounds/Sounds.h"
 
+#define RECIPIENT_X_DEFAULT 110
+#define RECIPIENT_VISIBLE_LIMIT_MIN 100
+#define RECIPIENT_VISIBLE_LIMIT_MAX 140
+#define RECIPIENT_REAPPEAR_LIMIT_MIN 60
+#define RECIPIENT_REAPPEAR_LIMIT_MAX 100
 
 const uint8_t PROGMEM init_turtles[25] = { 
   11, 29, static_cast<uint8_t>(Direction::Left), static_cast<uint8_t>(TurtleMode::LookingDown), 0,
@@ -13,6 +18,7 @@ const uint8_t PROGMEM init_turtles[25] = {
   74, 29, static_cast<uint8_t>(Direction::Right), static_cast<uint8_t>(TurtleMode::LookingDown), 60,
   95, 29, static_cast<uint8_t>(Direction::Right), static_cast<uint8_t>(TurtleMode::LookingDown), 80,
 };
+
 
 // ----------------------------------------------------------------------------
 //  Initialise state ..
@@ -24,7 +30,8 @@ void PlayGameState::activate(StateMachine & machine) {
   auto & sound = machine.getContext().sound;  
 
   gameStats.gameOver = false;
-  this->counter = 0;
+
+  this->playing = false;
   
 
   // Initialise turtles ..
@@ -39,8 +46,17 @@ void PlayGameState::activate(StateMachine & machine) {
 
   }
 
+  this->stickHeadUp.min = 160;
+  this->stickHeadUp.max = 200;
+  this->stickHeadUp.counter = random(this->stickHeadUp.min, this->stickHeadUp.max);
+
 
   // Initialise fishes ..
+
+  this->fishLaunch.min = 120;
+  this->fishLaunch.max = 180;
+  this->fishSpeed.min = 20;
+  this->fishSpeed.max = 40;
 
   for (uint8_t x = 0; x < 5; x++) {
 
@@ -50,13 +66,27 @@ void PlayGameState::activate(StateMachine & machine) {
 
   }
 
-  this->player.setPosition(0);
+  this->fishLaunch.counter = random(this->fishLaunch.min, this->fishLaunch.max);
+
+
+  // Initialise player ..
+
+  this->player.initLife();
   this->player.setHoldingPackage(true);
-  this->launchFishCounter = random(120, 180);
-  this->stickHeadUpCounter = random(200, 240);
+
+
+  // Initialise recipient ..
+
+  this->recipient.visible.min = RECIPIENT_VISIBLE_LIMIT_MIN;
+  this->recipient.visible.max = RECIPIENT_VISIBLE_LIMIT_MAX;
+  this->recipient.reappear.min = RECIPIENT_REAPPEAR_LIMIT_MIN;
+  this->recipient.reappear.max = RECIPIENT_REAPPEAR_LIMIT_MAX;
+  this->recipient.x = RECIPIENT_X_DEFAULT;
+  this->recipient.visible.counter = random(this->recipient.visible.min, this->recipient.visible.max);
   
   BaseState::initWater();
   BaseState::setPaused(false);
+
   sound.setOutputEnabled(arduboy.audio.enabled);
 
 }
@@ -76,22 +106,22 @@ void PlayGameState::update(StateMachine & machine) {
 
   if (!BaseState::getPaused()) {
 
-    if (this->launchFishCounter > 0) launchFishCounter--;
-    if (this->stickHeadUpCounter > 0) stickHeadUpCounter--;
+    if (this->fishLaunch.counter  > 0)    this->fishLaunch.counter--;
+    if (this->stickHeadUp.counter > 0)    this->stickHeadUp.counter--;
 
 
     // Launch a fish?
 
-    if (this->launchFishCounter == 0) {
+    if (this->fishLaunch.counter  == 0) {
 
-      this->launchFishCounter = random(120, 180);
+      this->fishLaunch.counter = random(this->fishLaunch.min, this->fishLaunch.max);
       uint8_t fishIndex = getDisabledFish(machine);
 
       if (fishIndex != FISH_NONE) {
 
         auto &fish = this->fishes[fishIndex];
         fish.setEnabled(true);
-        fish.setDelay(random(20, 40));
+        fish.setDelay(random(this->fishSpeed.min, this->fishSpeed.max));
 
       }
 
@@ -100,7 +130,7 @@ void PlayGameState::update(StateMachine & machine) {
 
     // Stick turtles head up?
 
-    if (this->stickHeadUpCounter == 0) {
+    if (this->stickHeadUp.counter == 0) {
 
       uint8_t turtleIndex = this->player.getTurtleIndex();
       uint8_t turtleIndexPrev = this->player.getTurtleIndexPrev();
@@ -113,7 +143,7 @@ void PlayGameState::update(StateMachine & machine) {
         if (!fish.getEnabled()) {   
 
           auto &turtle = this->turtles[turtleIndexPrev];
-          this->stickHeadUpCounter = random(160, 200);
+          this->stickHeadUp.counter = random(this->stickHeadUp.min, this->stickHeadUp.max);
           turtle.setMode(TurtleMode::LookingUp);
 
         }
@@ -122,46 +152,74 @@ void PlayGameState::update(StateMachine & machine) {
 
     }
 
+
     // Update player position ..
 
-    // if ((justPressed & LEFT_BUTTON) && this->player.canMoveLeft())      { this->player.moveLeft(); }
-    // if ((justPressed & RIGHT_BUTTON) && this->player.canMoveRight())    { this->player.moveRight(); }
-    if (arduboy.everyXFrames(2)) {
-        
-      if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft())      { 
-  //      this->player.moveLeft(); 
-        this->player.setDirection(Direction::Left);
-        }
-      if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight())    { 
-        this->player.setDirection(Direction::Right);
-      //  this->player.moveRight(); 
-      }
-    
-      this->player.move(this->turtles[0].getMode() == TurtleMode::Diving, 
-                        this->turtles[1].getMode() == TurtleMode::Diving, 
-                        this->turtles[2].getMode() == TurtleMode::Diving, 
-                        this->turtles[3].getMode() == TurtleMode::Diving, 
-                        this->turtles[4].getMode() == TurtleMode::Diving);
-      
-      if (this->player.isPackagePosition() && this->player.isHoldingPackage()) {
-        gameStats.score++;
-        this->player.setHoldingPackage(false);
-        this->newPackage = true;
-      }
+    if (this->playing && !gameStats.gameOver) {
 
-      if (this->player.isLeftCliffPosition() && this->newPackage) {
-        this->player.setHoldingPackage(true);
-        this->newPackage = false;
+      if (arduboy.everyXFrames(2)) {
+          
+        if ((pressed & LEFT_BUTTON) && this->player.canMoveLeft()) { 
+          this->player.setDirection(Direction::Left);
+        }
+
+        if ((pressed & RIGHT_BUTTON) && this->player.canMoveRight()) { 
+          this->player.setDirection(Direction::Right);
+        }
+      
+        this->player.move(this->turtles[0].getMode() == TurtleMode::Diving, 
+                          this->turtles[1].getMode() == TurtleMode::Diving, 
+                          this->turtles[2].getMode() == TurtleMode::Diving, 
+                          this->turtles[3].getMode() == TurtleMode::Diving, 
+                          this->turtles[4].getMode() == TurtleMode::Diving);
+        
+        if (this->player.isPackagePosition() && this->player.isHoldingPackage() && this->recipient.x < RECIPIENT_X_DEFAULT + 5) {
+          gameStats.score++;
+          this->player.setHoldingPackage(false);
+          this->newPackage = true;
+        }
+
+        if (this->player.isLeftCliffPosition() && this->newPackage) {
+          this->player.setHoldingPackage(true);
+          this->newPackage = false;
+        }
+
+
+        // Update recipient position and counters ..
+
+        if (this->recipient.visible.counter > 0) {
+
+          this->recipient.visible.counter--;
+          this->recipient.x = RECIPIENT_X_DEFAULT;
+
+          if (this->recipient.visible.counter == 0) {
+
+            this->recipient.reappear.counter = 0;
+            this->recipient.reappear.upperLimit = random(this->recipient.reappear.min, this->recipient.reappear.max);
+
+          }
+
+        }
+        else {
+
+          if (this->recipient.reappear.counter < recipient.reappear.upperLimit) {
+
+            this->recipient.reappear.counter++;
+            this->recipient.x = RECIPIENT_X_DEFAULT + (this->recipient.reappear.counter < recipient.reappear.upperLimit / 2 ? this->recipient.reappear.counter : this->recipient.reappear.upperLimit - this->recipient.reappear.counter);
+
+            if (this->recipient.reappear.counter == this->recipient.reappear.upperLimit) {
+
+              this->recipient.visible.counter = random(this->recipient.visible.min, this->recipient.visible.max);
+
+            }
+
+          }
+
+        }   
+
       }
 
     }
-
-
-    // if (gameStats.misses >= 3 && allVictimsDisabled()) {
-
-    //   gameStats.gameOver = true;
-
-    // }
 
   }
 
@@ -176,18 +234,7 @@ void PlayGameState::update(StateMachine & machine) {
 
     }
 
-    // uint8_t firstElement = this->waterLevel[0];
-  
-    // for (uint8_t x = 0; x < 11; x++) {
-
-    //   this->waterLevel[x] = this->waterLevel[x + 1];
-
-    // }
-
-    // this->waterLevel[11] = firstElement;
-
   }
-
 
   BaseState::updateWater(machine);
 
@@ -206,18 +253,40 @@ void PlayGameState::update(StateMachine & machine) {
     }
 
     turtle.updateMode();
-// //sjh
-//     uint8_t stickHeadUpCounter = 0;
 
   }
 
 
-//  machine.changeState(GameStateType::GameIntroScreen, GameStateType::None);
+  // Has the player died ?
+
+  if (this->player.isDead() && this->playing) {
+
+    this->playing = false;
+    gameStats.numberOfLivesLeft--;
+
+    if (gameStats.numberOfLivesLeft == 0) {
+      gameStats.gameOver = true;
+    }
+
+  }
+
 
 
   // Handle other buttons ..
 
-  BaseState::handleCommonButtons(machine);
+  if (!this->playing && !gameStats.gameOver) {
+
+    if ((justPressed & A_BUTTON) || (justPressed & LEFT_BUTTON)) {
+
+      this->playing = true;
+      this->player.initLife();
+
+    }
+
+  }
+  else {  
+    BaseState::handleCommonButtons(machine);
+  }
 
 }
 
@@ -305,7 +374,9 @@ void PlayGameState::render(StateMachine & machine) {
   BaseState::renderScore(machine, false, 0);
 
 
-  Sprites::drawExternalMask(110, 3, Images::Recipient, Images::Recipient_Mask, 0, 0);
+  // Render recipient ..
+
+  Sprites::drawExternalMask(this->recipient.x, 3, Images::Recipient, Images::Recipient_Mask, 0, 0);
 
 
   // Render player ..
@@ -323,7 +394,17 @@ void PlayGameState::render(StateMachine & machine) {
   // Sprites::drawExternalMask(114, 33 + this->waterLevel[11], Images::Water_03, Images::Water_03_Mask, 0, 0);
 
 
-  BaseState::renderGameOverOrPause(machine);
+  if (!this->playing && !gameStats.gameOver) {
+
+    Sprites::drawExternalMask(27, 20, Images::PlayerFrame, Images::PlayerFrame_Mask, 0, 0);
+    Sprites::drawSelfMasked(85, 24, Images::Player_Number, gameStats.numberOfLivesLeft - 1);
+
+  }
+  else {
+
+    BaseState::renderGameOverOrPause(machine);
+
+  }
   arduboy.displayWithBackground();
 
 }

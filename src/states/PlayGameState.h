@@ -9,25 +9,46 @@
 
 class PlayGameState : public BaseState { //GameState<GameContext, GameStateType> {
 
+  struct Limit {
+  
+    uint8_t min;
+    uint8_t max;
+    uint8_t counter;
+    uint8_t upperLimit;
+  
+  };
+
+  struct Recipient {
+
+    uint8_t x = 110;
+    Limit visible; 
+    Limit reappear; 
+
+  };
+
   private:
  
     Player player;
     Turtle turtles[5];
     Fish fishes[5];
 
-    uint8_t counter = 0;
-    uint8_t launchFishCounter = 0;
-    uint8_t stickHeadUpCounter = 0;
-    uint8_t bobWater = 0;
+    Recipient recipient;
+    Limit fishLaunch; 
+    Limit fishSpeed; 
+    Limit stickHeadUp;
 
+    uint8_t bobWater = 0;
     bool newPackage = false;
+    bool playing = false;
 
   public:
+
     void activate(StateMachine & machine) override;
     void update(StateMachine & machine) override;
     void render(StateMachine & machine) override;
 
   private:
+
     uint8_t getDisabledFish(StateMachine &machine);
 
 };

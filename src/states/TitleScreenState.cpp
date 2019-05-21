@@ -33,6 +33,7 @@ void TitleScreenState::update(StateMachine & machine) {
   auto & arduboy = machine.getContext().arduboy;
   auto justPressed = arduboy.justPressedButtons();
   auto pressed = arduboy.pressedButtons();
+  auto & gameStats = machine.getContext().gameStats;
 
 
 	// Restart ?
@@ -54,11 +55,12 @@ void TitleScreenState::update(StateMachine & machine) {
 
 	// Handle other input ..
 
-	if (justPressed & A_BUTTON) {
+	if (justPressed & A_BUTTON || justPressed & B_BUTTON) {
+    gameStats.mode = (justPressed & A_BUTTON ? GameMode::Easy : GameMode::Hard);
 		machine.changeState(GameStateType::PlayGameScreen, GameStateType::None); 
 	}
 
-	if (justPressed & B_BUTTON) {
+	if (justPressed & UP_BUTTON || justPressed & DOWN_BUTTON || justPressed & LEFT_BUTTON || justPressed & RIGHT_BUTTON) {
 		machine.changeState(GameStateType::HighScoreScreen, GameStateType::None); 
 	}
 

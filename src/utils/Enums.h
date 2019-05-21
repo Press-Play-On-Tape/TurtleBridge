@@ -69,6 +69,8 @@ enum class Player_Positions : int8_t {
 	Jumping_Right_02_WithPackage,
   Drowning_01,
   Drowning_02,
+  Drowning_03,
+  Drowning_04,
   Giving,
   Giving_WithPackage,
   None
@@ -115,7 +117,7 @@ struct GameStats {
     GameStats() { };
 
     uint16_t score = 0;
-    uint8_t misses = 0;
+    uint8_t numberOfLivesLeft = 3;
 
     GameMode mode = GameMode::Easy;
 
@@ -123,7 +125,7 @@ struct GameStats {
 
     void resetGame() {
 
-      this->misses = 0;
+      this->numberOfLivesLeft = 3;
       this->score = 0; 
       this->gameOver = false;
 

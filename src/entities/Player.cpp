@@ -146,7 +146,7 @@ const int8_t PROGMEM positionData[] = {
 };
 
 #define DEAD_INDEX_MAX 37
-#define DEAD_COUNTER_MAX 200
+#define DEAD_COUNTER_MAX 100
 
 const int8_t PROGMEM positionData_Dead[] = { 
 
@@ -202,6 +202,7 @@ const int8_t PROGMEM positionData_Dead[] = {
 
 };
 
+
 Player::Player() { 
 
 }
@@ -216,6 +217,7 @@ int8_t Player::getDisplayX() {
   else {
 
     int8_t xOffset = pgm_read_byte(&positionData_Dead[this->dead * NUM_OF_ELEMENTS]);
+    if (this->lastDirection == Direction::Left) xOffset = xOffset * -1;
     return x + xOffset;
 
   }
@@ -271,7 +273,9 @@ uint8_t Player::getImageIndex() {
   }
   else {
 
-    return pgm_read_byte(&positionData_Dead[this->dead * NUM_OF_ELEMENTS] + 2);
+    uint8_t image = pgm_read_byte((&positionData_Dead[this->dead * NUM_OF_ELEMENTS] + 2));
+    if (this->lastDirection == Direction::Left) image = image + 2;
+    return image;
 
   }
 
@@ -306,7 +310,11 @@ void Player::setDirection(Direction direction) {
 
 bool Player::canMoveLeft() {
   
-  return this->position > 0;
+  if (this->position == 0) return false;
+
+  uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
+
+  if (posData >= 0 && posData < POSITION_HAND_OVER_PACKAGE) { return true; }
 
 }
 
@@ -366,6 +374,7 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
 
     if (posData > 0 && posData < POSITION_HAND_OVER_PACKAGE) {
 
+      this->lastDirection = this->direction;
       this->direction = Direction::None;
 
       switch (posData - POSITION_TURTLE_0) {
@@ -453,5 +462,13 @@ bool Player::isLeftCliffPosition() {
 bool Player::isDead() {
 
   return (this->deadCounter == 1);
+
+}
+
+void Player::initLife() {
+
+  this->deadCounter = 0;
+  this->dead = 0;
+  this->position = 0;
 
 }
