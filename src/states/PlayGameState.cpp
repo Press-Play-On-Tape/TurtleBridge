@@ -272,7 +272,7 @@ void PlayGameState::render(StateMachine & machine) {
     auto fish = this->fishes[x];
 
     if (fish.getEnabled()) {
-      SpritesB::drawExternalMask(fish.getDisplayX(), fish.getDisplayY(), Images::Fish, Images::Fish_Mask, fish.getImageIndex() + (x < 3 ? 2 : 0), fish.getImageIndex() + (x < 3 ? 2 : 0));
+      Sprites::drawExternalMask(fish.getDisplayX(), fish.getDisplayY(), Images::Fish, Images::Fish_Mask, fish.getImageIndex() + (x < 3 ? 2 : 0), fish.getImageIndex() + (x < 3 ? 2 : 0));
     }
 
   }
@@ -283,10 +283,10 @@ void PlayGameState::render(StateMachine & machine) {
   for (auto &turtle : this->turtles) {
   
     if (turtle.getType() == TurtleType::Black) {
-      SpritesB::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle_03, Images::Turtle_02_03_Mask, turtle.getImageIndex(), turtle.getImageIndex());
+      Sprites::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle_03, Images::Turtle_02_03_Mask, turtle.getImageIndex(), turtle.getImageIndex());
     }
     else {
-      SpritesB::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle_01, Images::Turtle_01_Mask, turtle.getImageIndex(), turtle.getImageIndex());
+      Sprites::drawExternalMask(turtle.getDisplayX(), turtle.getDisplayY(), Images::Turtle_01, Images::Turtle_01_Mask, turtle.getImageIndex(), turtle.getImageIndex());
     }
 
   }
@@ -296,7 +296,7 @@ void PlayGameState::render(StateMachine & machine) {
   // Render package ..
 
   if (this->newPackage) {
-    SpritesB::drawExternalMask(1, 3, Images::Package, Images::Package_Mask, 0, 0);
+    Sprites::drawExternalMask(1, 3, Images::Package, Images::Package_Mask, 0, 0);
   }
 
 
@@ -305,7 +305,7 @@ void PlayGameState::render(StateMachine & machine) {
   BaseState::renderScore(machine, false, 0);
 
 
-  SpritesB::drawExternalMask(110, 3, Images::Recipient, Images::Recipient_Mask, 0, 0);
+  Sprites::drawExternalMask(110, 3, Images::Recipient, Images::Recipient_Mask, 0, 0);
 
 
   // Render player ..
@@ -313,14 +313,14 @@ void PlayGameState::render(StateMachine & machine) {
   uint8_t turtleIndex = this->player.getTurtleIndex();
   Turtle &turtle = this->turtles[turtleIndex != TURTLE_NONE ? turtleIndex : 0];
 
-  SpritesB::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(turtleIndex != TURTLE_NONE ? (turtle.getBobUp() ? 1 : 0) : 0), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
+  Sprites::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(turtleIndex != TURTLE_NONE ? (turtle.getBobUp() ? 1 : 0) : 0), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
 
   BaseState::renderWater();
-  // SpritesB::drawExternalMask(0, 33 + this->waterLevel[0], Images::Water_01, Images::Water_01_Mask, 0, 0);
+  // Sprites::drawExternalMask(0, 33 + this->waterLevel[0], Images::Water_01, Images::Water_01_Mask, 0, 0);
   // for (uint8_t x = 1; x < 11; x++) {
-  //   SpritesB::drawExternalMask(4 + (x * 10), 33 + this->waterLevel[x], Images::Water_02, Images::Water_02_Mask, 0, 0);
+  //   Sprites::drawExternalMask(4 + (x * 10), 33 + this->waterLevel[x], Images::Water_02, Images::Water_02_Mask, 0, 0);
   // }
-  // SpritesB::drawExternalMask(114, 33 + this->waterLevel[11], Images::Water_03, Images::Water_03_Mask, 0, 0);
+  // Sprites::drawExternalMask(114, 33 + this->waterLevel[11], Images::Water_03, Images::Water_03_Mask, 0, 0);
 
 
   BaseState::renderGameOverOrPause(machine);

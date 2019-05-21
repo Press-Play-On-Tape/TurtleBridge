@@ -9,7 +9,7 @@ void BaseState::renderScore(StateMachine & machine, bool renderHealth, int16_t h
   auto & gameStats = machine.getContext().gameStats;
   auto & arduboy = machine.getContext().arduboy;
 
-  SpritesB::drawExternalMask(52, 1, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
+  Sprites::drawExternalMask(52, 1, Images::Scoreboard, Images::Scoreboard_Mask, 0, 0);
 
   if (!renderHealth) {
 
@@ -18,7 +18,7 @@ void BaseState::renderScore(StateMachine & machine, bool renderHealth, int16_t h
 
     for (uint8_t j = 4; j > 0; --j) {
 
-      SpritesB::drawSelfMasked(75 - (j*5), 4, Images::Scoreboard_Numbers, digits[j - 1]);
+      Sprites::drawSelfMasked(75 - (j*5), 4, Images::Scoreboard_Numbers, digits[j - 1]);
 
     }
 
@@ -48,17 +48,17 @@ void BaseState::renderCommonScenery(StateMachine & machine) {
 
   }
 
-  SpritesB::drawOverwrite(this->backgroundX - 64, 0, Images::SkyBackground, 0);
-  SpritesB::drawOverwrite(this->backgroundX, 0, Images::SkyBackground, 0);
+  Sprites::drawOverwrite(this->backgroundX - 64, 0, Images::SkyBackground, 0);
+  Sprites::drawOverwrite(this->backgroundX, 0, Images::SkyBackground, 0);
   
-  SpritesB::drawExternalMask(0, 15, Images::Ground_Left, Images::Ground_Left_Mask, 0, 0);
-  SpritesB::drawExternalMask(117, 15, Images::Ground_Right, Images::Ground_Right_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 15, Images::Ground_Left, Images::Ground_Left_Mask, 0, 0);
+  Sprites::drawExternalMask(117, 15, Images::Ground_Right, Images::Ground_Right_Mask, 0, 0);
 
-  SpritesB::drawExternalMask(12, 48, Images::Seaweed, Images::Seaweed_Mask, this->seaweed ? 1 : 0, 0);
-  SpritesB::drawExternalMask(112, 48, Images::Seaweed, Images::Seaweed_Mask, this->seaweed ? 1 : 0, 0);
-  SpritesB::drawExternalMask(64, 54, Images::Seaweed, Images::Seaweed_Mask, this->seaweed ? 1 : 0, 0);
+  Sprites::drawExternalMask(12, 48, Images::Seaweed, Images::Seaweed_Mask, this->seaweed ? 1 : 0, 0);
+  Sprites::drawExternalMask(112, 48, Images::Seaweed, Images::Seaweed_Mask, this->seaweed ? 1 : 0, 0);
+  Sprites::drawExternalMask(64, 54, Images::Seaweed, Images::Seaweed_Mask, this->seaweed ? 1 : 0, 0);
 
-  SpritesB::drawExternalMask(11, 48, Images::Ground_Bottom, Images::Ground_Bottom_Mask, 0, 0);
+  Sprites::drawExternalMask(11, 48, Images::Ground_Bottom, Images::Ground_Bottom_Mask, 0, 0);
 
   if (arduboy.everyXFrames(32)) {
 
@@ -113,7 +113,7 @@ void BaseState::renderGameOverOrPause(StateMachine & machine) {
 
   if (gameStats.gameOver) {
 
-    SpritesB::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); 
+    Sprites::drawExternalMask(32, 20, Images::GameOver, Images::GameOver_Mask, 0, 0); 
 
   }
 
@@ -121,7 +121,7 @@ void BaseState::renderGameOverOrPause(StateMachine & machine) {
 
   if (this->paused) {
 
-    SpritesB::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
+    Sprites::drawExternalMask(39, 20, Images::Pause, Images::Pause_Mask, 0, 0); 
 
   }
 
@@ -175,10 +175,10 @@ void BaseState::updateWater(StateMachine & machine) {
 
 void BaseState::renderWater() {
 
-  SpritesB::drawExternalMask(0, 33 + this->waterLevel[0], Images::Water_01, Images::Water_01_Mask, 0, 0);
+  Sprites::drawExternalMask(0, 33 + this->waterLevel[0], Images::Water_01, Images::Water_01_Mask, 0, 0);
   for (uint8_t x = 1; x < 11; x++) {
-    SpritesB::drawExternalMask(4 + (x * 10), 33 + this->waterLevel[x], Images::Water_02, Images::Water_02_Mask, 0, 0);
+    Sprites::drawExternalMask(4 + (x * 10), 33 + this->waterLevel[x], Images::Water_02, Images::Water_02_Mask, 0, 0);
   }
-  SpritesB::drawExternalMask(114, 33 + this->waterLevel[11], Images::Water_03, Images::Water_03_Mask, 0, 0);
+  Sprites::drawExternalMask(114, 33 + this->waterLevel[11], Images::Water_03, Images::Water_03_Mask, 0, 0);
 
 }

@@ -148,14 +148,14 @@ void HighScoreState::update(StateMachine & machine) {
 void HighScoreState::renderHighScore(uint8_t y, const SaveEntry & saveEntry) {
 
   for (uint8_t i = 0; i < 3; i++) {
-    SpritesB::drawOverwrite(HS_NAME_LEFT + (i * 6), y, font_images, saveEntry.name[i] == 63 ? 0 : saveEntry.name[i] - 64);
+    Sprites::drawOverwrite(HS_NAME_LEFT + (i * 6), y, font_images, saveEntry.name[i] == 63 ? 0 : saveEntry.name[i] - 64);
   }
 
   for (uint8_t j = 6, x2 = HS_SCORE_LEFT - 4; j > 0; --j, x2 += 5) {
     
     uint8_t digits[6] = {};
     extractDigits(digits, saveEntry.score);
-    SpritesB::drawOverwrite(x2, y, font_images, digits[j - 1] + 27);
+    Sprites::drawOverwrite(x2, y, font_images, digits[j - 1] + 27);
 
   }
 
@@ -174,8 +174,8 @@ void HighScoreState::render(StateMachine & machine) {
   BaseState::renderCommonScenery(machine);
   BaseState::renderWater();
 
-  SpritesB::drawExternalMask(29, 18, Images::HighscorePanel, Images::HighscorePanel_Mask, 0, 0);
-  SpritesB::drawExternalMask(22, 3, Images::HighscoreText, Images::HighscoreText_Mask, 0, 0);
+  Sprites::drawExternalMask(29, 18, Images::HighscorePanel, Images::HighscorePanel_Mask, 0, 0);
+  Sprites::drawExternalMask(22, 3, Images::HighscoreText, Images::HighscoreText_Mask, 0, 0);
   
 
 
@@ -194,7 +194,7 @@ void HighScoreState::render(StateMachine & machine) {
     char *player = this->players[this->winnerIdx].name;
 
     arduboy.fillRect(HS_NAME_LEFT + (this->charIdx * 6) - 1, HS_CHAR_TOP + (winnerIdx * HS_CHAR_V_SPACING) - 1, 6, 8, WHITE);
-    SpritesB::drawErase(HS_NAME_LEFT + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx), font_images, player[this->charIdx] == 63 ? 0 : player[this->charIdx] - 64);
+    Sprites::drawErase(HS_NAME_LEFT + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx), font_images, player[this->charIdx] == 63 ? 0 : player[this->charIdx] - 64);
 
   }
 
@@ -203,7 +203,7 @@ void HighScoreState::render(StateMachine & machine) {
 
   if (this->winnerIdx == NO_WINNER && this->pressACounter == 0) {
 
-    SpritesB::drawExternalMask(48, 53, Images::Highscore_PressA, Images::Highscore_PressA_Mask, 0, 0);
+    Sprites::drawExternalMask(48, 53, Images::Highscore_PressA, Images::Highscore_PressA_Mask, 0, 0);
 
   }
 

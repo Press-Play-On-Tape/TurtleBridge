@@ -87,7 +87,7 @@ void TitleScreenState::render(StateMachine & machine) {
 
   if (this->pressACounter == PRESS_A_DELAY) {
 
-    SpritesB::drawExternalMask(26, 41, Images::PressAandB, Images::PressAandB_Mask, 0, 0);
+    Sprites::drawExternalMask(26, 41, Images::PressAandB, Images::PressAandB_Mask, 0, 0);
 
   }
 
