@@ -146,6 +146,8 @@ const int8_t PROGMEM positionData[] = {
 };
 
 #define DEAD_INDEX_MAX 37
+#define DEAD_COUNTER_MAX 200
+
 const int8_t PROGMEM positionData_Dead[] = { 
 
   5, 32, static_cast<int8_t>(Player_Positions::None), 0,
@@ -265,11 +267,9 @@ uint8_t Player::getImageIndex() {
                             this->direction == Direction::Right) ? 4 : 0);
 
     return imageIndex + rightOffset + (this->holdingPackage ? 1 : 0);
+
   }
   else {
-
-Serial.print("getImageIndex() dead: ");
-Serial.println(dead);
 
     return pgm_read_byte(&positionData_Dead[this->dead * NUM_OF_ELEMENTS] + 2);
 
@@ -365,53 +365,43 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
     uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
 
     if (posData > 0 && posData < POSITION_HAND_OVER_PACKAGE) {
-Serial.print("check ");
-Serial.print(turtle_0_Diving);
-Serial.print(" ");
-Serial.print(turtle_1_Diving);
-Serial.print(" ");
-Serial.print(turtle_2_Diving);
-Serial.print(" ");
-Serial.print(turtle_3_Diving);
-Serial.print(" ");
-Serial.print(turtle_4_Diving);
-Serial.println(" ");
+
       this->direction = Direction::None;
 
       switch (posData - POSITION_TURTLE_0) {
 
         case 0:
           if (turtle_0_Diving) {
-Serial.println("dead on turtle 0 ");
             this->dead = DEAD_INDEX_MAX;
+            this->deadCounter = DEAD_COUNTER_MAX;
           }
           break;
 
         case 1:
           if (turtle_1_Diving) {
-Serial.println("dead on turtle 1 ");
             this->dead = DEAD_INDEX_MAX;
+            this->deadCounter = DEAD_COUNTER_MAX;
           }
           break;
 
         case 2:
           if (turtle_2_Diving) {
-Serial.println("dead on turtle 2 ");
             this->dead = DEAD_INDEX_MAX;
+            this->deadCounter = DEAD_COUNTER_MAX;
           }
           break;
 
         case 3:
           if (turtle_3_Diving) {
-Serial.println("dead on turtle 3 ");
             this->dead = DEAD_INDEX_MAX;
+            this->deadCounter = DEAD_COUNTER_MAX;
           }
           break;
 
         case 4:
           if (turtle_4_Diving) {
-Serial.println("dead on turtle 4 ");
             this->dead = DEAD_INDEX_MAX;
+            this->deadCounter = DEAD_COUNTER_MAX;
           }
           break;
           
@@ -423,6 +413,7 @@ Serial.println("dead on turtle 4 ");
   else {
 
     this->dead--;
+    if (this->deadCounter > 1) this->deadCounter--;
 
     if (this->dead == 0) this->dead = 7;
 
@@ -456,5 +447,11 @@ bool Player::isPackagePosition() {
 bool Player::isLeftCliffPosition() {
 
   return (this->position == 0);
+
+}
+
+bool Player::isDead() {
+
+  return (this->deadCounter == 1);
 
 }

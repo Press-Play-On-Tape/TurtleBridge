@@ -19,6 +19,7 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
     uint8_t launchFishCounter = 0;
     uint8_t stickHeadUpCounter = 0;
     uint8_t bobWater = 0;
+
     bool newPackage = false;
 
   public:
