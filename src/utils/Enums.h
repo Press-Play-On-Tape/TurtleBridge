@@ -9,11 +9,24 @@
 
 // - Overall Settings -----------------
 
-// #define TARGET_SCORE_BASE 10  
-// #define TARGET_SCORE_INC_PER_LEVEL 5 
-#define TARGET_SCORE_BASE 45 
-#define TARGET_SCORE_INC_PER_LEVEL 5 
-#define LED_BRIGHTNESS 32
+// Delay between fish launches, starts at range between 'min' and 'max' and decreases every 'fish_launch_mod_min' points ..
+constexpr uint8_t fish_launch_init_min = 120;
+constexpr uint8_t fish_launch_init_max = 160;
+constexpr uint8_t fish_launch_mod_min = 4;
+constexpr uint8_t fish_launch_mod_max = fish_launch_mod_min * (fish_launch_init_max / fish_launch_init_min);
+
+
+// Speed at which fish rises, starts at range between 'min' and 'max' and decreases every 'fish_speed_mod_min' points ..
+constexpr uint8_t fish_speed_init_min = 20;
+constexpr uint8_t fish_speed_init_max = 40;
+constexpr uint8_t fish_speed_mod_min = 15;
+constexpr uint8_t fish_speed_mod_max = fish_speed_mod_min * (fish_speed_init_max / fish_speed_init_min);
+
+#define RECIPIENT_X_DEFAULT 110
+#define RECIPIENT_VISIBLE_LIMIT_MIN 100
+#define RECIPIENT_VISIBLE_LIMIT_MAX 140
+#define RECIPIENT_REAPPEAR_LIMIT_MIN 60
+#define RECIPIENT_REAPPEAR_LIMIT_MAX 100
 
 #define TURTLES_COUNT 5
 #define TURTLE_NONE 255
@@ -22,20 +35,7 @@
 #define RETURN_TO_LOOKING_DOWN_FROM_DIVING 33
 
 
-
-
-// - Fire Game ------------------------
-
-#define PLAYER_MIN_X_POS 18
-#define PLAYER_MID_X_POS 39
-#define PLAYER_MAX_X_POS 60
-#define PLAYER_WIDTH_HALF 20
-
-#define PLAYER_Y_POS 42
-#define PLAYER_STEP_INC 6 
-
-
-// - High Scores ---------------------
+// // - High Scores ---------------------
 
 #define NAME_LENGTH 3
 #define NAME_LENGTH_PLUS_TERM (NAME_LENGTH + 1)
@@ -45,7 +45,6 @@
 #define HS_CHAR_TOP 24
 #define HS_CHAR_V_SPACING 9
 #define HS_PRESS_A_DELAY 100
-
 #define NO_WINNER 255
 
 constexpr size_t eepromStart = 170;

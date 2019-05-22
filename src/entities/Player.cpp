@@ -147,7 +147,6 @@ const int8_t PROGMEM positionData[] = {
 
 #define DEAD_INDEX_MAX 37
 #define DEAD_COUNTER_MAX 100
-#define DEAD_REPEAT_MAX 6
 
 const int8_t PROGMEM positionData_Dead[] = { 
 
@@ -274,18 +273,9 @@ uint8_t Player::getImageIndex() {
   }
   else {
 
-    if (this->deadRepeat > 0) {
-
-      uint8_t image = pgm_read_byte((&positionData_Dead[this->dead * NUM_OF_ELEMENTS] + 2));
-      if (this->lastDirection == Direction::Left) image = image + 2;
-      return image;
-
-    }
-    // else {
-
-    //   return static_cast<uint8_t>(Player_Positions::Tombstone);
-
-    // }
+    uint8_t image = pgm_read_byte((&positionData_Dead[this->dead * NUM_OF_ELEMENTS] + 2));
+    if (this->lastDirection == Direction::Left) image = image + 2;
+    return image;
 
   }
 
@@ -299,7 +289,7 @@ bool Player::showTombstone() {
 
 uint8_t Player::getTombstoneY() {
 
-  return 80 -  this->deadY;
+  return 63 - this->deadY;
 
 }
 
@@ -332,11 +322,12 @@ void Player::setDirection(Direction direction) {
 
 bool Player::canMoveLeft() {
   
-  if (this->position == 0) return false;
+  if (this->position == 0) {
+    return false;
+  }
 
   uint8_t posData = pgm_read_byte(&positionData[this->position * NUM_OF_ELEMENTS] + 3);
-
-  if (posData > 0 && posData < POSITION_HAND_OVER_PACKAGE) { return true; }
+  return (posData > 0 && posData < POSITION_HAND_OVER_PACKAGE);
 
 }
 
@@ -405,7 +396,6 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
           if (turtle_0_Diving) {
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
-            this->deadRepeat = DEAD_REPEAT_MAX;
             this->deadY = 0;
           }
           break;
@@ -414,7 +404,6 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
           if (turtle_1_Diving) {
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
-            this->deadRepeat = DEAD_REPEAT_MAX;
             this->deadY = 0;
           }
           break;
@@ -423,7 +412,6 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
           if (turtle_2_Diving) {
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
-            this->deadRepeat = DEAD_REPEAT_MAX;
             this->deadY = 0;
           }
           break;
@@ -432,7 +420,6 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
           if (turtle_3_Diving) {
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
-            this->deadRepeat = DEAD_REPEAT_MAX;
             this->deadY = 0;
           }
           break;
@@ -441,7 +428,6 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
           if (turtle_4_Diving) {
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
-            this->deadRepeat = DEAD_REPEAT_MAX;
             this->deadY = 0;
           }
           break;
@@ -454,13 +440,13 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
   else {
 
     this->dead--;
+
     if (this->dead % 4 == 0) this->deadY++;
     if (this->deadCounter > 1) this->deadCounter--;
 
     if (this->dead == 0) {
 
       this->dead = 7;
-      if (this->deadRepeat > 0) this->deadRepeat--;
 
     }
 
@@ -514,5 +500,6 @@ void Player::initLife() {
   this->deadCounter = 0;
   this->dead = 0;
   this->position = 0;
+  this->direction = Direction::None;
 
 }

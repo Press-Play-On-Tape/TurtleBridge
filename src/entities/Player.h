@@ -45,9 +45,9 @@ class Player {
     uint8_t position;
     uint8_t turtleIndexPrev = TURTLE_NONE;
     bool holdingPackage;
+    
     uint8_t dead;
     uint8_t deadCounter;
-    uint8_t deadRepeat;
     uint8_t deadY;
 
     Direction direction = Direction::None;

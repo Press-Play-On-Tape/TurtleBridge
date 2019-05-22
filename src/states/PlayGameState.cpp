@@ -5,12 +5,6 @@
 #include "../images/Images.h"
 #include "../sounds/Sounds.h"
 
-#define RECIPIENT_X_DEFAULT 110
-#define RECIPIENT_VISIBLE_LIMIT_MIN 100
-#define RECIPIENT_VISIBLE_LIMIT_MAX 140
-#define RECIPIENT_REAPPEAR_LIMIT_MIN 60
-#define RECIPIENT_REAPPEAR_LIMIT_MAX 100
-
 const uint8_t PROGMEM init_turtles[25] = { 
   11, 29, static_cast<uint8_t>(Direction::Left), static_cast<uint8_t>(TurtleMode::LookingDown), 0,
   32, 29, static_cast<uint8_t>(Direction::Left), static_cast<uint8_t>(TurtleMode::LookingDown), 20,
@@ -53,10 +47,10 @@ void PlayGameState::activate(StateMachine & machine) {
 
   // Initialise fishes ..
 
-  this->fishLaunch.min = 120;
-  this->fishLaunch.max = 180;
-  this->fishSpeed.min = 20;
-  this->fishSpeed.max = 40;
+  this->fishLaunch.min = fish_launch_init_min;
+  this->fishLaunch.max = fish_launch_init_max;
+  this->fishSpeed.min = fish_speed_init_min;
+  this->fishSpeed.max = fish_speed_init_max;
 
   for (uint8_t x = 0; x < 5; x++) {
 
@@ -136,7 +130,7 @@ void PlayGameState::update(StateMachine & machine) {
       uint8_t turtleIndexPrev = this->player.getTurtleIndexPrev();
 
       if (turtleIndexPrev != TURTLE_NONE && turtleIndex == TURTLE_NONE && 
-        (turtleIndexPrev !=5 || (turtleIndexPrev ==5 && this->player.getDirection() == Direction::Left))) {
+        (turtleIndexPrev !=5 || (turtleIndexPrev == 5 && this->player.getDirection() == Direction::Left))) {
 
         auto &fish = this->fishes[turtleIndexPrev];
 
@@ -186,10 +180,19 @@ void PlayGameState::update(StateMachine & machine) {
         if (this->player.isPackagePosition() && this->player.isHoldingPackage()) {
 
           if (this->recipient.x < RECIPIENT_X_DEFAULT + 5) {
+            
             gameStats.score++;
+
+            if (gameStats.score % fish_launch_mod_min == 0)     this->fishLaunch.min--; 
+            if (gameStats.score % fish_launch_mod_max == 0)     this->fishLaunch.max--; 
+
+            if (gameStats.score % fish_speed_mod_min == 0)      this->fishSpeed.min--; 
+            if (gameStats.score % fish_speed_mod_max == 0)      this->fishSpeed.max--; 
+
             this->player.setHoldingPackage(false);
             this->newPackage = true;
             sound.tones(Sounds::PackageDelivered);
+
           }
           else {
             sound.tones(Sounds::PackageNotDelivered);
@@ -301,7 +304,7 @@ void PlayGameState::update(StateMachine & machine) {
 
   if (!this->playing && !gameStats.gameOver) {
 
-    if ((justPressed & A_BUTTON) || (justPressed & LEFT_BUTTON)) {
+    if ((justPressed & A_BUTTON) || (justPressed & B_BUTTON)) {
 
       sound.tones(Sounds::PackageNotDelivered);
       this->playing = true;
@@ -391,7 +394,7 @@ void PlayGameState::render(StateMachine & machine) {
   // Render package ..
 
   if (this->newPackage) {
-    Sprites::drawExternalMask(1, 3, Images::Package, Images::Package_Mask, 0, 0);
+    Sprites::drawExternalMask(1, 6, Images::Package, Images::Package_Mask, 0, 0);
   }
 
 
