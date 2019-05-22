@@ -73,6 +73,7 @@ enum class Player_Positions : int8_t {
   Drowning_04,
   Giving,
   Giving_WithPackage,
+  Tombstone,
   None
 };
 

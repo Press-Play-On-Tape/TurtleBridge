@@ -27,8 +27,6 @@ class Player {
     void moveLeft();
     void moveRight();
     void move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Diving, bool turtle_3_Diving, bool turtle_4_Diving);
-    void initLife();
-
     uint8_t getImageIndex();
     uint8_t getTurtleIndex();
     uint8_t getTurtleIndexPrev();
@@ -37,6 +35,7 @@ class Player {
     bool isLeftCliffPosition();
     bool isDead();
     bool isDying();
+    void initLife();
 
   protected:
 
@@ -45,6 +44,7 @@ class Player {
     bool holdingPackage;
     uint8_t dead;
     uint8_t deadCounter;
+    uint8_t deadRepeat;
 
     Direction direction = Direction::None;
     Direction lastDirection = Direction::None;

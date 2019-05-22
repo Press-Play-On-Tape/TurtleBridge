@@ -417,7 +417,7 @@ void PlayGameState::render(StateMachine & machine) {
   if (!this->playing && !gameStats.gameOver) {
 
     Sprites::drawExternalMask(27, 20, Images::PlayerFrame, Images::PlayerFrame_Mask, 0, 0);
-    Sprites::drawSelfMasked(85, 24, Images::Player_Number, gameStats.numberOfLivesLeft - 1);
+    Sprites::drawSelfMasked(79, 23, Images::Player_Number, gameStats.numberOfLivesLeft - 1);
 
   }
   else {
