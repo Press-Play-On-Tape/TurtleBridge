@@ -147,7 +147,7 @@ const int8_t PROGMEM positionData[] = {
 
 #define DEAD_INDEX_MAX 37
 #define DEAD_COUNTER_MAX 100
-#define DEAD_REPEAT_MAX 5
+#define DEAD_REPEAT_MAX 6
 
 const int8_t PROGMEM positionData_Dead[] = { 
 
@@ -236,7 +236,7 @@ int8_t Player::getDisplayY(uint8_t offset) {
    
     int8_t y = pgm_read_byte(&positionData[(this->position * NUM_OF_ELEMENTS) + 1]) + 2;
     int8_t yOffset = pgm_read_byte(&positionData_Dead[(this->dead * NUM_OF_ELEMENTS) + 1]);
-    return y + yOffset;
+    return y + yOffset + this->deadY;
 
   }
 
@@ -274,7 +274,6 @@ uint8_t Player::getImageIndex() {
   }
   else {
 
-Serial.println(this->deadRepeat);
     if (this->deadRepeat > 0) {
 
       uint8_t image = pgm_read_byte((&positionData_Dead[this->dead * NUM_OF_ELEMENTS] + 2));
@@ -282,13 +281,25 @@ Serial.println(this->deadRepeat);
       return image;
 
     }
-    else {
+    // else {
 
-      return static_cast<uint8_t>(Player_Positions::Tombstone);
+    //   return static_cast<uint8_t>(Player_Positions::Tombstone);
 
-    }
+    // }
 
   }
+
+}
+
+bool Player::showTombstone() {
+
+  return (dead != 0);
+
+}
+
+uint8_t Player::getTombstoneY() {
+
+  return 80 -  this->deadY;
 
 }
 
@@ -395,6 +406,7 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
             this->deadRepeat = DEAD_REPEAT_MAX;
+            this->deadY = 0;
           }
           break;
 
@@ -403,6 +415,7 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
             this->deadRepeat = DEAD_REPEAT_MAX;
+            this->deadY = 0;
           }
           break;
 
@@ -411,6 +424,7 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
             this->deadRepeat = DEAD_REPEAT_MAX;
+            this->deadY = 0;
           }
           break;
 
@@ -419,6 +433,7 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
             this->deadRepeat = DEAD_REPEAT_MAX;
+            this->deadY = 0;
           }
           break;
 
@@ -427,6 +442,7 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
             this->dead = DEAD_INDEX_MAX;
             this->deadCounter = DEAD_COUNTER_MAX;
             this->deadRepeat = DEAD_REPEAT_MAX;
+            this->deadY = 0;
           }
           break;
           
@@ -438,6 +454,7 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
   else {
 
     this->dead--;
+    if (this->dead % 4 == 0) this->deadY++;
     if (this->deadCounter > 1) this->deadCounter--;
 
     if (this->dead == 0) {

@@ -411,6 +411,11 @@ void PlayGameState::render(StateMachine & machine) {
   Turtle &turtle = this->turtles[turtleIndex != TURTLE_NONE ? turtleIndex : 0];
 
   Sprites::drawExternalMask(this->player.getDisplayX(), this->player.getDisplayY(turtleIndex != TURTLE_NONE ? (turtle.getBobUp() ? 1 : 0) : 0), Images::Arduboy, Images::Arduboy_Mask, this->player.getImageIndex(), this->player.getImageIndex());
+
+  if (this->player.showTombstone()) {
+    Sprites::drawExternalMask(this->player.getDisplayX(), this->player.getTombstoneY(), Images::Arduboy, Images::Arduboy_Mask, static_cast<uint8_t>(Player_Positions::Tombstone), static_cast<uint8_t>(Player_Positions::Tombstone));
+  }
+
   BaseState::renderWater();
 
 
