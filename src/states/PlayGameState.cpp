@@ -394,7 +394,7 @@ void PlayGameState::render(StateMachine & machine) {
   // Render package ..
 
   if (this->newPackage) {
-    Sprites::drawExternalMask(1, 6, Images::Package, Images::Package_Mask, 0, 0);
+    Sprites::drawExternalMask(1, 8, Images::Package, Images::Package_Mask, 0, 0);
   }
 
 

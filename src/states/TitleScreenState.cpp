@@ -1,6 +1,7 @@
 #include "TitleScreenState.h"
 #include "../images/Images.h"
 #include "../utils/EEPROM_Utils.h"
+#include "../utils/Enums.h"
 #include "../sounds/Sounds.h"
 
 constexpr const static uint8_t PRESS_A_DELAY = 200;
@@ -16,6 +17,14 @@ void TitleScreenState::activate(StateMachine & machine) {
   auto & arduboy = machine.getContext().arduboy;
   auto & sound = machine.getContext().sound;  
 	
+  this->fish1.x = 16;
+  this->fish1.y = 41;
+  this->fish1.direction = Direction::Right;
+	
+  this->fish2.x = 104;
+  this->fish2.y = 48;
+  this->fish2.direction = Direction::Left;
+
   gameStats.resetGame();
   sound.setOutputEnabled(arduboy.audio.enabled);
 
@@ -68,6 +77,23 @@ void TitleScreenState::update(StateMachine & machine) {
   BaseState::updateWater(machine);
 
 
+  // Update fishes ..
+
+  if (arduboy.everyXFrames(6)) {
+
+    this->fish1.update();
+    if (arduboy.everyXFrames(12)) {
+      this->fish1.index = !this->fish1.index;
+    }
+    
+    this->fish2.update();
+    if (arduboy.everyXFrames(12)) {
+      this->fish2.index = !this->fish2.index;
+    }
+
+  }
+
+
   // Update 'Press A' counter / delay ..
 
   if (this->pressACounter < PRESS_A_DELAY) this->pressACounter++;
@@ -85,11 +111,22 @@ void TitleScreenState::render(StateMachine & machine) {
   BaseState::renderCommonScenery(machine);
   BaseState::renderWater();
 
-  Sprites::drawExternalMask(27, 9, Images::Title, Images::Title_Mask, 0, 0);
+  Sprites::drawExternalMask(26, 9, Images::Title, Images::Title_Mask, 0, 0);
+
+
+  // Render fish ..
+
+  uint8_t index = (this->fish1.direction == Direction::Left ? 0 : 2) + (this->fish1.index ? 0 : 1);
+  Sprites::drawExternalMask(this->fish1.x, this->fish1.y, Images::Fish, Images::Fish_Mask, index, index);
+
+  index = (this->fish2.direction == Direction::Left ? 0 : 2) + (this->fish2.index ? 0 : 1);
+  Sprites::drawExternalMask(this->fish2.x, this->fish2.y, Images::Fish, Images::Fish_Mask, index, index);
+
+
 
   if (this->pressACounter == PRESS_A_DELAY) {
 
-    Sprites::drawExternalMask(26, 41, Images::PressAandB, Images::PressAandB_Mask, 0, 0);
+    Sprites::drawExternalMask(35, 42, Images::PressAandB, Images::PressAandB_Mask, 0, 0);
 
   }
 
