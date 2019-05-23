@@ -134,7 +134,15 @@ const int8_t PROGMEM positionData[] = {
   97, 1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
   99, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
   100, -8, static_cast<int8_t>(Player_Positions::Giving), POSITION_HAND_OVER_PACKAGE,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
+  100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
   100, -8, static_cast<int8_t>(Player_Positions::Giving), 0,
   99, -7, static_cast<int8_t>(Player_Positions::Giving), 0,
   98, -1, static_cast<int8_t>(Player_Positions::Jumping_Left_01), 0,
@@ -370,7 +378,7 @@ void Player::move(bool turtle_0_Diving, bool turtle_1_Diving, bool turtle_2_Divi
 
           if (posData == TURTLE_INDEX_LAST) {
 
-            this->position = this->position - 11;//21;
+            this->position = this->position - 19;//21;
 
           }
 
