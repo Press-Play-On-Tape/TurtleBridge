@@ -39,6 +39,7 @@ class PlayGameState : public BaseState { //GameState<GameContext, GameStateType>
 
     uint8_t bobWater = 0;
     uint8_t prevTurtleIndex = 0;
+    uint8_t flashArrow = 0;
     
     bool newPackage = false;
     bool playing = false;

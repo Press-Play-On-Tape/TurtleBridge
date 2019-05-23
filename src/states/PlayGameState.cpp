@@ -78,6 +78,8 @@ void PlayGameState::activate(StateMachine & machine) {
   this->recipient.x = RECIPIENT_X_DEFAULT;
   this->recipient.visible.counter = random(this->recipient.visible.min, this->recipient.visible.max);
   
+  this->flashArrow = 216;
+
   BaseState::initWater();
   BaseState::setPaused(false);
 
@@ -150,6 +152,8 @@ void PlayGameState::update(StateMachine & machine) {
     // Update player position ..
 
     if (this->playing && !gameStats.gameOver) {
+
+      if (this->flashArrow > 0)            this->flashArrow--;
 
       if (arduboy.everyXFrames(2)) {
           
@@ -390,7 +394,6 @@ void PlayGameState::render(StateMachine & machine) {
   }
 
 
-
   // Render package ..
 
   if (this->newPackage) {
@@ -405,7 +408,7 @@ void PlayGameState::render(StateMachine & machine) {
 
   // Render recipient ..
 
-  Sprites::drawExternalMask(this->recipient.x, 3, Images::Recipient, Images::Recipient_Mask, 0, 0);
+  Sprites::drawExternalMask(this->recipient.x + 3, 11, Images::Recipient, Images::Recipient_Mask, 0, 0);
 
 
   // Render player ..
@@ -420,6 +423,13 @@ void PlayGameState::render(StateMachine & machine) {
   }
 
   BaseState::renderWater();
+
+
+  // Render flashing arrow ..
+
+  if (this->flashArrow > 0 && (this->flashArrow / 24) % 2 == 0) {
+    Sprites::drawExternalMask(115, 1, Images::DownArrow, Images::DownArrow_Mask, 0, 0);
+  }
 
 
   if (!this->playing && !gameStats.gameOver) {
