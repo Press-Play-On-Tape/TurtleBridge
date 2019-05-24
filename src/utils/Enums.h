@@ -10,17 +10,25 @@
 // - Overall Settings -----------------
 
 // Delay between fish launches, starts at range between 'min' and 'max' and decreases every 'fish_launch_mod_min' points ..
-constexpr uint8_t fish_launch_init_min = 120;
-constexpr uint8_t fish_launch_init_max = 160;
-constexpr uint8_t fish_launch_mod_min = 4;
-constexpr uint8_t fish_launch_mod_max = fish_launch_mod_min * (fish_launch_init_max / fish_launch_init_min);
+constexpr uint8_t fish_launch_easy_init_min = 120;
+constexpr uint8_t fish_launch_easy_init_max = 160;
+constexpr uint8_t fish_launch_easy_mod_min = 4;
+constexpr uint8_t fish_launch_easy_mod_max = fish_launch_easy_mod_min * (fish_launch_easy_init_max / fish_launch_easy_init_min);
+constexpr uint8_t fish_launch_hard_init_min = 90;
+constexpr uint8_t fish_launch_hard_init_max = 120;
+constexpr uint8_t fish_launch_hard_mod_min = 3;
+constexpr uint8_t fish_launch_hard_mod_max = fish_launch_hard_mod_min * (fish_launch_hard_init_max / fish_launch_hard_init_min);
 
 
 // Speed at which fish rises, starts at range between 'min' and 'max' and decreases every 'fish_speed_mod_min' points ..
-constexpr uint8_t fish_speed_init_min = 20;
-constexpr uint8_t fish_speed_init_max = 40;
-constexpr uint8_t fish_speed_mod_min = 15;
-constexpr uint8_t fish_speed_mod_max = fish_speed_mod_min * (fish_speed_init_max / fish_speed_init_min);
+constexpr uint8_t fish_speed_easy_init_min = 20;
+constexpr uint8_t fish_speed_easy_init_max = 40;
+constexpr uint8_t fish_speed_easy_mod_min = 15;
+constexpr uint8_t fish_speed_easy_mod_max = fish_speed_easy_mod_min * (fish_speed_easy_init_max / fish_speed_easy_init_min);
+constexpr uint8_t fish_speed_hard_init_min = 16;
+constexpr uint8_t fish_speed_hard_init_max = 32;
+constexpr uint8_t fish_speed_hard_mod_min = 12;
+constexpr uint8_t fish_speed_hard_mod_max = fish_speed_hard_mod_min * (fish_speed_hard_init_max / fish_speed_hard_init_min);
 
 #define RECIPIENT_X_DEFAULT 110
 #define RECIPIENT_VISIBLE_LIMIT_MIN 100

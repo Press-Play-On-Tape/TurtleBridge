@@ -47,10 +47,22 @@ void PlayGameState::activate(StateMachine & machine) {
 
   // Initialise fishes ..
 
-  this->fishLaunch.min = fish_launch_init_min;
-  this->fishLaunch.max = fish_launch_init_max;
-  this->fishSpeed.min = fish_speed_init_min;
-  this->fishSpeed.max = fish_speed_init_max;
+  if (gameStats.mode == GameMode::Easy) {
+
+    this->fishLaunch.min = fish_launch_easy_init_min;
+    this->fishLaunch.max = fish_launch_easy_init_max;
+    this->fishSpeed.min = fish_speed_easy_init_min;
+    this->fishSpeed.max = fish_speed_easy_init_max;
+
+  }
+  else {
+
+    this->fishLaunch.min = fish_launch_hard_init_min;
+    this->fishLaunch.max = fish_launch_hard_init_max;
+    this->fishSpeed.min = fish_speed_hard_init_min;
+    this->fishSpeed.max = fish_speed_hard_init_max;
+
+  }
 
   for (uint8_t x = 0; x < 5; x++) {
 
@@ -187,11 +199,24 @@ void PlayGameState::update(StateMachine & machine) {
             
             gameStats.score++;
 
-            if (gameStats.score % fish_launch_mod_min == 0)     this->fishLaunch.min--; 
-            if (gameStats.score % fish_launch_mod_max == 0)     this->fishLaunch.max--; 
+            if (gameStats.mode == GameMode::Easy) {
 
-            if (gameStats.score % fish_speed_mod_min == 0)      this->fishSpeed.min--; 
-            if (gameStats.score % fish_speed_mod_max == 0)      this->fishSpeed.max--; 
+              if (gameStats.score % fish_launch_easy_mod_min == 0)     this->fishLaunch.min--; 
+              if (gameStats.score % fish_launch_easy_mod_max == 0)     this->fishLaunch.max--; 
+
+              if (gameStats.score % fish_speed_easy_mod_min == 0)      this->fishSpeed.min--; 
+              if (gameStats.score % fish_speed_easy_mod_max == 0)      this->fishSpeed.max--; 
+
+            }
+            else {
+
+              if (gameStats.score % fish_launch_hard_mod_min == 0)     this->fishLaunch.min--; 
+              if (gameStats.score % fish_launch_hard_mod_max == 0)     this->fishLaunch.max--; 
+
+              if (gameStats.score % fish_speed_hard_mod_min == 0)      this->fishSpeed.min--; 
+              if (gameStats.score % fish_speed_hard_mod_max == 0)      this->fishSpeed.max--; 
+
+            }
 
             this->player.setHoldingPackage(false);
             this->newPackage = true;
