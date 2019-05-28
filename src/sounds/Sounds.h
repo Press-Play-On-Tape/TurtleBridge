@@ -42,4 +42,9 @@ namespace Sounds {
     TONES_END
   };
 
+  const uint16_t * const Scores[] PROGMEM = {
+    Score,
+    Score1,
+  };
+
 }
