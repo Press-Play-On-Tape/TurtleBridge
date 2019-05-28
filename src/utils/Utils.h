@@ -3,6 +3,14 @@
 #include <stddef.h>
 #include <Print.h>
 
+// ----------------------------------------------------------------------------
+//  Extract the size of an array .. 
+//
+template< typename T, size_t size > constexpr size_t getSize(T(&)[size]) {
+
+  return size;
+
+}
 
 // Extract individual digits of a uint8_t -------------------------------------
 
