@@ -19,7 +19,7 @@ namespace Sounds {
     TONES_END
   };
 
-  const uint16_t Score[] PROGMEM = {
+  const uint16_t Score0[] PROGMEM = {
     NOTE_C4,250, NOTE_A4,250, NOTE_G4,250, NOTE_A4,250, NOTE_C4,250, NOTE_A4,125, NOTE_G4,375,  NOTE_A4,250,
     NOTE_DS4,250, NOTE_C5,250, NOTE_AS4,250, NOTE_C5,250, NOTE_DS4,250, NOTE_C5,125, NOTE_AS4,375, NOTE_C5,250,
     NOTE_F4,250, NOTE_F5,250, NOTE_DS5,250, NOTE_F5,250, NOTE_GS4,250, NOTE_F5,125, NOTE_DS5,375, NOTE_F5,250,
@@ -43,7 +43,7 @@ namespace Sounds {
   };
 
   const uint16_t * const Scores[] PROGMEM = {
-    Score,
+    Score0,
     Score1,
   };
 
