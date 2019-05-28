@@ -2,7 +2,14 @@
 #include "../images/Images.h"
 #include "../utils/EEPROM_Utils.h"
 #include "../utils/Enums.h"
+#include "../utils/Utils.h"
 #include "../sounds/Sounds.h"
+
+// For size_t
+#include <stddef.h>
+
+// For pgm_read_ptr
+#include <avr/pgmspace.h>
 
 constexpr const static uint8_t PRESS_A_DELAY = 200;
 constexpr const static uint8_t UPLOAD_DELAY = 16;
@@ -29,7 +36,11 @@ void TitleScreenState::activate(StateMachine & machine) {
   sound.setOutputEnabled(arduboy.audio.enabled);
 
   BaseState::initWater();
-  sound.tones(Sounds::Score);
+
+  auto scoreIndex = static_cast<size_t>(random(getSize(Sounds::Scores)));
+  auto score = static_cast<const uint16_t *>(pgm_read_ptr(&Sounds::Scores[scoreIndex]));
+
+  sound.tones(score);
 
 }
 
