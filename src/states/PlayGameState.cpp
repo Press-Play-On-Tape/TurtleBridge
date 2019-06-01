@@ -111,7 +111,6 @@ void PlayGameState::update(StateMachine & machine) {
 	auto pressed = arduboy.pressedButtons();
 	auto justPressed = arduboy.justPressedButtons();
 
-
   if (!BaseState::getPaused()) {
 
     if (this->fishLaunch.counter  > 0)    this->fishLaunch.counter--;
@@ -292,18 +291,22 @@ void PlayGameState::update(StateMachine & machine) {
 
   // Update fish locations ..
 
-  for (uint8_t x = 0; x < TURTLES_COUNT; x++) {
-  
-    auto &fish = this->fishes[x];
-    auto &turtle = this->turtles[x];
+  if (!this->getPaused()) {
 
-    fish.updatePositionIndex();
+    for (uint8_t x = 0; x < TURTLES_COUNT; x++) {
+    
+      auto &fish = this->fishes[x];
+      auto &turtle = this->turtles[x];
 
-    if (fish.isEdible()) {
-      turtle.setMode(TurtleMode::Diving);
+      fish.updatePositionIndex();
+
+      if (fish.isEdible()) {
+        turtle.setMode(TurtleMode::Diving);
+      }
+
+      turtle.updateMode();
+
     }
-
-    turtle.updateMode();
 
   }
 
