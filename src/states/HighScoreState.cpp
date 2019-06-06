@@ -14,6 +14,7 @@ void HighScoreState::activate(StateMachine & machine) {
   this->charIdx = 0;
   this->clearScores = 0;
   this->pressACounter = HS_PRESS_A_DELAY;
+  this->selectedMode = gameStats.mode;
   this->winnerIdx = (gameStats.score > 0 ? EEPROM_Utils::saveScore(gameStats.score) : NO_WINNER);
 
   arduboy.clearButtonState();

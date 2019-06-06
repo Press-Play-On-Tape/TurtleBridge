@@ -16,6 +16,8 @@ class HighScoreState : public BaseState {
     uint8_t clearScores = 0;
     uint8_t pressACounter = HS_PRESS_A_DELAY;
 
+    GameMode selectedMode = GameMode::Easy;
+
 	  SaveEntry players[eepromSaveEntriesCount];
 
     void renderHighScore(uint8_t y, const SaveEntry & saveEntry);
