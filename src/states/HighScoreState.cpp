@@ -1,6 +1,5 @@
 #include "HighScoreState.h"
 #include "../images/Images.h"
-#include "../utils/EEPROM_Utils.h"
 #include "../fonts/Font4x6.h"
 
 // ----------------------------------------------------------------------------
@@ -14,12 +13,14 @@ void HighScoreState::activate(StateMachine & machine) {
   this->charIdx = 0;
   this->clearScores = 0;
   this->pressACounter = HS_PRESS_A_DELAY;
-  this->winnerIdx = (gameStats.score > 0 ? EEPROM_Utils::saveScore(gameStats.score) : NO_WINNER);
+  this->selectedMode = gameStats.mode;
+  this->winnerIdx = (gameStats.score > 0 ? EEPROM_Utils::saveScore(this->selectedMode, gameStats.score) : NO_WINNER);
 
   arduboy.clearButtonState();
 
   // Retrieve existing names and scores ..
-  EEPROM_Utils::readSaveEntries(this->players);
+  EEPROM_Utils::readSaveEntries(GameMode::Easy, this->easyEntries);
+  EEPROM_Utils::readSaveEntries(GameMode::Hard, this->hardEntries);
   BaseState::initWater();
 
 }
@@ -33,6 +34,7 @@ void HighScoreState::update(StateMachine & machine) {
 	auto & arduboy = machine.getContext().arduboy;
   auto justPressed = arduboy.justPressedButtons();
   auto pressed = arduboy.pressedButtons();
+  auto & entries = (this->selectedMode == GameMode::Easy) ? this->easyEntries : this->hardEntries;
 
 
   // Is the new score a high score ?
@@ -41,9 +43,10 @@ void HighScoreState::update(StateMachine & machine) {
 
     if (arduboy.everyXFrames(12)) {
 
+      char * player = entries[this->winnerIdx].name;
+
       if (pressed & UP_BUTTON) {
 
-        char *player = this->players[this->winnerIdx].name;
         player[this->charIdx]++;
         if (player[this->charIdx] > 90)  player[this->charIdx] = 65;
         if (player[this->charIdx] == 64) player[this->charIdx] = 65;
@@ -52,7 +55,6 @@ void HighScoreState::update(StateMachine & machine) {
 
       if (pressed & DOWN_BUTTON) {
 
-        char *player = this->players[this->winnerIdx].name;
         player[this->charIdx]--;
         if (player[this->charIdx] < 65)  player[this->charIdx] = 90;
 
@@ -68,12 +70,10 @@ void HighScoreState::update(StateMachine & machine) {
 
       if (pressed & A_BUTTON) {
 
-        char *player = this->players[this->winnerIdx].name;
-
         if (player[0] != 63 && player[1] != 63 && player[2] != 63) {
           
           for (uint8_t i = 0; i < 3; i++) {
-            EEPROM_Utils::saveChar(this->winnerIdx, i, player[i]);
+            EEPROM_Utils::saveChar(this->selectedMode, this->winnerIdx, i, player[i]);
           }
           
           this->winnerIdx = NO_WINNER;
@@ -94,6 +94,14 @@ void HighScoreState::update(StateMachine & machine) {
     if ((justPressed & A_BUTTON || justPressed & B_BUTTON) && this->pressACounter == 0) {
 
       machine.changeState(GameStateType::TitleScreen, GameStateType::None); 
+    }
+
+    if ((pressed & LEFT_BUTTON) != 0) {
+      this->selectedMode = GameMode::Easy;
+    }
+
+    if ((pressed & RIGHT_BUTTON) != 0) {
+      this->selectedMode = GameMode::Hard;
     }
 
   }
@@ -117,7 +125,8 @@ void HighScoreState::update(StateMachine & machine) {
 				clearScores = 0;
 				arduboy.setRGBled(0, 0, 0);
 				EEPROM_Utils::clearEEPROM();
-				EEPROM_Utils::readSaveEntries(this->players);
+				EEPROM_Utils::readSaveEntries(GameMode::Easy, this->easyEntries);
+				EEPROM_Utils::readSaveEntries(GameMode::Hard, this->hardEntries);
 
 				break;
 
@@ -168,6 +177,7 @@ void HighScoreState::renderHighScore(uint8_t y, const SaveEntry & saveEntry) {
 void HighScoreState::render(StateMachine & machine) {
 
 	auto & arduboy = machine.getContext().arduboy;
+	auto & entries = (this->selectedMode == GameMode::Easy) ? this->easyEntries : this->hardEntries;
 
 	const bool flash = arduboy.getFrameCountHalf(FLASH_FRAME_COUNT_2);
 
@@ -180,9 +190,9 @@ void HighScoreState::render(StateMachine & machine) {
 
 
   // Render scores ..
-  for (uint8_t index = 0; index < eepromSaveEntriesCount; ++index) {
+  for (uint8_t index = 0; index < EEPROM_Utils::saveEntriesCount; ++index) {
 
-    renderHighScore(HS_CHAR_TOP + (HS_CHAR_V_SPACING * index), this->players[index]);
+    renderHighScore(HS_CHAR_TOP + (HS_CHAR_V_SPACING * index), entries[index]);
 
   }
 
@@ -191,7 +201,7 @@ void HighScoreState::render(StateMachine & machine) {
 
   if (this->winnerIdx < NO_WINNER && flash) {
 
-    char *player = this->players[this->winnerIdx].name;
+    char *player = entries[this->winnerIdx].name;
 
     arduboy.fillRect(HS_NAME_LEFT + (this->charIdx * 6) - 1, HS_CHAR_TOP + (winnerIdx * HS_CHAR_V_SPACING) - 1, 6, 8, WHITE);
     Sprites::drawErase(HS_NAME_LEFT + (this->charIdx * 6), HS_CHAR_TOP + (HS_CHAR_V_SPACING * this->winnerIdx), font_images, player[this->charIdx] == 63 ? 0 : player[this->charIdx] - 64);
@@ -206,6 +216,10 @@ void HighScoreState::render(StateMachine & machine) {
     Sprites::drawExternalMask(48, 53, Images::Highscore_PressA, Images::Highscore_PressA_Mask, 0, 0);
 
   }
+
+  const size_t panelIndex = static_cast<size_t>(this->selectedMode);
+
+  Sprites::drawExternalMask(2, 27, Images::DifficultyPanel, Images::DifficultyPanel_Mask, panelIndex, 0);
 
   arduboy.displayWithBackground();
 

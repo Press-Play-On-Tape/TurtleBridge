@@ -41,19 +41,20 @@ namespace EEPROM_Utils {
     eeprom_update_byte(eepromStartChar1, letter1);
     eeprom_update_byte(eepromStartChar2, letter2);
 
-    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(saveEntriesStart);
     
-    for(uint8_t saveIndex = 0; saveIndex < eepromSaveEntriesCount; ++saveIndex) {
+    for(uint8_t saveIndex = 0; saveIndex < saveEntriesTotal; ++saveIndex) {
     
       SaveEntry entry { 0, "" };
 
+      const char letter = ('A' + saveIndex);
       for (uint8_t index = 0; index < SaveEntry::nameCount; ++index) {
 
-        entry.name[index] = ('A' + saveIndex);
+        entry.name[index] = letter;
       
       }
 
-      entry.name[NAME_LENGTH] = '\0';
+      entry.name[SaveEntry::nameCount] = '\0';
 
       eeprom_update_block(&entry, &saveEntries[saveIndex], sizeof(SaveEntry));
 
@@ -61,11 +62,9 @@ namespace EEPROM_Utils {
 
   }
 
-  uint8_t findScore(uint16_t newScore) {
+  uint8_t findScore(uint16_t newScore, const SaveEntry * saveEntries) {
 
-    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
-
-    for (uint8_t i = 0; i < eepromSaveEntriesCount; ++i) {
+    for (uint8_t i = 0; i < saveEntriesCount; ++i) {
 
       const uint16_t oldScore = eeprom_read_word(&saveEntries[i].score);
 
@@ -84,9 +83,12 @@ namespace EEPROM_Utils {
   /* -----------------------------------------------------------------------------
    *   Save score if it is in the top 3, return slot number (or NO_WINNER) ..
    */
-  uint8_t saveScore(uint16_t newScore) {
+  uint8_t saveScore(GameMode gameMode, uint16_t newScore) {
 
-    const uint8_t targetIndex = findScore(newScore);
+    const size_t saveEntriesIndex = (gameMode == GameMode::Easy) ? saveEntriesEasyStart : saveEntriesHardStart;
+    SaveEntry * saveEntries = reinterpret_cast<SaveEntry *>(saveEntriesIndex);
+
+    const uint8_t targetIndex = findScore(newScore, saveEntries);
 
     if(targetIndex == NO_WINNER) {
 
@@ -96,9 +98,7 @@ namespace EEPROM_Utils {
 
     // New High Score ..
 
-    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
-
-    for (uint8_t index = (eepromSaveEntriesCount - 1); index > targetIndex; --index) {
+    for (uint8_t index = (saveEntriesCount - 1); index > targetIndex; --index) {
 
       const uint8_t previousIndex = (index - 1);
 
@@ -116,52 +116,59 @@ namespace EEPROM_Utils {
 
   }
 
-  void saveChar(uint8_t saveIndex, uint8_t charIndex, char newChar) {
+  void saveChar(GameMode gameMode, uint8_t saveIndex, uint8_t charIndex, char newChar) {
 
-    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    const size_t saveEntriesIndex = (gameMode == GameMode::Easy) ? saveEntriesEasyStart : saveEntriesHardStart;
+    SaveEntry * saveEntries = reinterpret_cast<SaveEntry *>(saveEntriesIndex);
     uint8_t * const bytePointer = reinterpret_cast<uint8_t *>(&saveEntries[saveIndex].name[charIndex]);
     eeprom_update_byte(bytePointer, newChar);
 
   }
 
-  void readSaveEntry(SaveEntry & entry, uint8_t saveIndex) {
+  void readSaveEntry(GameMode gameMode, SaveEntry & entry, uint8_t saveIndex) {
 
-    const SaveEntry * const saveEntries = reinterpret_cast<const SaveEntry *>(eepromSaveEntriesStart);
+    const size_t saveEntriesIndex = (gameMode == GameMode::Easy) ? saveEntriesEasyStart : saveEntriesHardStart;
+    const SaveEntry * saveEntries = reinterpret_cast<const SaveEntry *>(saveEntriesIndex);
     eeprom_read_block(&entry, &saveEntries[saveIndex], sizeof(SaveEntry));
 
   }
 
-  void readSaveEntryName(char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
+  void readSaveEntryName(GameMode gameMode, char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
 
-    const SaveEntry * const saveEntries = reinterpret_cast<const SaveEntry *>(eepromSaveEntriesStart);
+    const size_t saveEntriesIndex = (gameMode == GameMode::Easy) ? saveEntriesEasyStart : saveEntriesHardStart;
+    const SaveEntry * saveEntries = reinterpret_cast<const SaveEntry *>(saveEntriesIndex);
     eeprom_read_block(&name, &saveEntries[saveIndex].name, SaveEntry::nameSize);
 
   }
 
-  uint16_t readSaveEntryScore(uint8_t saveIndex) {
+  uint16_t readSaveEntryScore(GameMode gameMode, uint8_t saveIndex) {
 
-    const SaveEntry * const saveEntries = reinterpret_cast<const SaveEntry *>(eepromSaveEntriesStart);
+    const size_t saveEntriesIndex = (gameMode == GameMode::Easy) ? saveEntriesEasyStart : saveEntriesHardStart;
+    const SaveEntry * saveEntries = reinterpret_cast<const SaveEntry *>(saveEntriesIndex);
     return eeprom_read_word(&saveEntries[saveIndex].score);
 
   }
 
-  void writeSaveEntry(const SaveEntry & entry, uint8_t saveIndex) {
+  void writeSaveEntry(GameMode gameMode, const SaveEntry & entry, uint8_t saveIndex) {
 
-    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    const size_t saveEntriesIndex = (gameMode == GameMode::Easy) ? saveEntriesEasyStart : saveEntriesHardStart;
+    SaveEntry * saveEntries = reinterpret_cast<SaveEntry *>(saveEntriesIndex);
     eeprom_update_block(&entry, &saveEntries[saveIndex], sizeof(SaveEntry));
 
   }
 
-  void writeSaveEntryName(const char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
+  void writeSaveEntryName(GameMode gameMode, const char (&name)[SaveEntry::nameSize], uint8_t saveIndex) {
 
-    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    const size_t saveEntriesIndex = (gameMode == GameMode::Easy) ? saveEntriesEasyStart : saveEntriesHardStart;
+    SaveEntry * saveEntries = reinterpret_cast<SaveEntry *>(saveEntriesIndex);
     eeprom_update_block(&name, &saveEntries[saveIndex].name, SaveEntry::nameSize);
 
   }
 
-  void writeSaveEntryScore(uint16_t score, uint8_t saveIndex) {
+  void writeSaveEntryScore(GameMode gameMode, uint16_t score, uint8_t saveIndex) {
 
-    SaveEntry * const saveEntries = reinterpret_cast<SaveEntry *>(eepromSaveEntriesStart);
+    const size_t saveEntriesIndex = (gameMode == GameMode::Easy) ? saveEntriesEasyStart : saveEntriesHardStart;
+    SaveEntry * saveEntries = reinterpret_cast<SaveEntry *>(saveEntriesIndex);
     eeprom_update_word(&saveEntries[saveIndex].score, score);
 
   }
