@@ -18,7 +18,8 @@ class HighScoreState : public BaseState {
 
     GameMode selectedMode = GameMode::Easy;
 
-	  SaveEntry players[eepromSaveEntriesCount];
+    SaveEntry easyEntries[eepromSaveEntriesCount];
+    SaveEntry hardEntries[eepromSaveEntriesCount];
 
     void renderHighScore(uint8_t y, const SaveEntry & saveEntry);
 
