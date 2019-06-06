@@ -55,12 +55,6 @@ constexpr uint8_t fish_speed_hard_mod_max = fish_speed_hard_mod_min * (fish_spee
 #define HS_PRESS_A_DELAY 100
 #define NO_WINNER 255
 
-constexpr size_t eepromStart = 170;
-constexpr size_t eepromStart_C1 = eepromStart + 1;
-constexpr size_t eepromStart_C2 = eepromStart + 2;
-constexpr size_t eepromSaveEntriesCount = 3;
-constexpr size_t eepromSaveEntriesStart = eepromStart + 3;
-
 #define FLASH_FRAME_COUNT_2 56
 
 enum class Player_Positions : int8_t {

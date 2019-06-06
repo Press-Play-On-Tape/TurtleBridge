@@ -1,6 +1,5 @@
 #include "HighScoreState.h"
 #include "../images/Images.h"
-#include "../utils/EEPROM_Utils.h"
 #include "../fonts/Font4x6.h"
 
 // ----------------------------------------------------------------------------
@@ -15,13 +14,13 @@ void HighScoreState::activate(StateMachine & machine) {
   this->clearScores = 0;
   this->pressACounter = HS_PRESS_A_DELAY;
   this->selectedMode = gameStats.mode;
-  this->winnerIdx = (gameStats.score > 0 ? EEPROM_Utils::saveScore(gameStats.score) : NO_WINNER);
+  this->winnerIdx = (gameStats.score > 0 ? EEPROM_Utils::saveScore(this->selectedMode, gameStats.score) : NO_WINNER);
 
   arduboy.clearButtonState();
 
   // Retrieve existing names and scores ..
-  EEPROM_Utils::readSaveEntries(this->easyEntries);
-  EEPROM_Utils::readSaveEntries(this->hardEntries);
+  EEPROM_Utils::readSaveEntries(GameMode::Easy, this->easyEntries);
+  EEPROM_Utils::readSaveEntries(GameMode::Hard, this->hardEntries);
   BaseState::initWater();
 
 }
@@ -74,7 +73,7 @@ void HighScoreState::update(StateMachine & machine) {
         if (player[0] != 63 && player[1] != 63 && player[2] != 63) {
           
           for (uint8_t i = 0; i < 3; i++) {
-            EEPROM_Utils::saveChar(this->winnerIdx, i, player[i]);
+            EEPROM_Utils::saveChar(this->selectedMode, this->winnerIdx, i, player[i]);
           }
           
           this->winnerIdx = NO_WINNER;
@@ -126,8 +125,8 @@ void HighScoreState::update(StateMachine & machine) {
 				clearScores = 0;
 				arduboy.setRGBled(0, 0, 0);
 				EEPROM_Utils::clearEEPROM();
-				EEPROM_Utils::readSaveEntries(this->easyEntries);
-				EEPROM_Utils::readSaveEntries(this->hardEntries);
+				EEPROM_Utils::readSaveEntries(GameMode::Easy, this->easyEntries);
+				EEPROM_Utils::readSaveEntries(GameMode::Hard, this->hardEntries);
 
 				break;
 
@@ -191,7 +190,7 @@ void HighScoreState::render(StateMachine & machine) {
 
 
   // Render scores ..
-  for (uint8_t index = 0; index < eepromSaveEntriesCount; ++index) {
+  for (uint8_t index = 0; index < EEPROM_Utils::saveEntriesCount; ++index) {
 
     renderHighScore(HS_CHAR_TOP + (HS_CHAR_V_SPACING * index), entries[index]);
 
