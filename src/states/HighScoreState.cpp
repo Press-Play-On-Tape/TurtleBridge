@@ -217,6 +217,10 @@ void HighScoreState::render(StateMachine & machine) {
 
   }
 
+  const size_t panelIndex = static_cast<size_t>(this->selectedMode);
+
+  Sprites::drawExternalMask(2, 27, Images::DifficultyPanel, Images::DifficultyPanel_Mask, panelIndex, 0);
+
   arduboy.displayWithBackground();
 
 }
