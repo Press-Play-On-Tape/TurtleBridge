@@ -79,6 +79,7 @@ void PlayGameState::activate(StateMachine & machine) {
 
   this->player.initLife();
   this->player.setHoldingPackage(true);
+  this->prevTurtleIndex = -1;
 
 
   // Initialise recipient ..
@@ -341,6 +342,7 @@ void PlayGameState::update(StateMachine & machine) {
       sound.tones(Sounds::PackageNotDelivered);
       this->playing = true;
       this->player.initLife();
+      this->prevTurtleIndex = -1;
 
     }
 
