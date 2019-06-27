@@ -188,6 +188,13 @@ void PlayGameState::update(StateMachine & machine) {
 
         uint8_t turtleIndex = this->player.getTurtleIndex();
 
+
+        // The @UXE fix for sound ..
+
+        if (this->player.isLeftCliffPosition() || (this->player.isPackagePosition() && !this->player.isHoldingPackage())) {
+          this->prevTurtleIndex = -1;
+        }
+
         if (turtleIndex != TURTLE_NONE && turtleIndex != this->prevTurtleIndex) {
           this->prevTurtleIndex = turtleIndex;
           sound.tones(Sounds::Turtle);
