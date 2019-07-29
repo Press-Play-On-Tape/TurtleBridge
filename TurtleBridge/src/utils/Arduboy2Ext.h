@@ -24,6 +24,5 @@ class Arduboy2Ext : public Arduboy2Base {
     void drawVerticalDottedLine(uint8_t y1, uint8_t y2, uint8_t x, uint8_t colour = WHITE);
 
     void displayWithBackground();
-    void paintScreenWithBackground(uint8_t image[]);
 
 };

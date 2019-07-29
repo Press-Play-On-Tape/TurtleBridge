@@ -93,51 +93,10 @@ void Arduboy2Ext::drawVerticalDottedLine(uint8_t y1, uint8_t y2, uint8_t x, uint
   
 
 void Arduboy2Ext::displayWithBackground() {
-  paintScreenWithBackground(sBuffer);
-}
 
+  display(true);
 
-void Arduboy2Ext::paintScreenWithBackground(uint8_t image[]) {
+  memset(sBuffer, 0xff, 512);
+  memset(&sBuffer[512], 0x03, 128);
 
-  uint8_t c;
-  int i = 0;
-
-  SPDR = image[i]; // set the first SPI data byte to get things started
-  image[i++] = 0xFF;  // clear the first image byte
-
-  // the code to iterate the loop and get the next byte from the buffer is
-  // executed while the previous byte is being sent out by the SPI controller
-
-  while (i < (HEIGHT * WIDTH) / 8) {
-    // get the next byte. It's put in a local variable so it can be sent as
-    // as soon as possible after the sending of the previous byte has completed
-    c = image[i];
-    // clear the byte in the image buffer
-
-    switch (i) {
-
-      case 0 ... 511:
-        image[i++] = 0xFF;
-        break;
-
-      case 512 ... 639:
-        image[i++] = 0x03;
-        break;
-
-      default:
-        image[i++] = 0x00;
-        break;
-      
-    }
-
-    while (!(SPSR & _BV(SPIF))) { } // wait for the previous byte to be sent
-
-    // put the next byte in the SPI data register. The SPI controller will
-    // clock it out while the loop continues and gets the next byte ready
-    SPDR = c;
-
-  }
-  
-  while (!(SPSR & _BV(SPIF))) { } // wait for the last byte to be sent
-  
 }
